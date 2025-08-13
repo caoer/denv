@@ -56,7 +56,7 @@ func PrepareEnv(envName string) error {
 	os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
 
 	// Create .denv symlinks in project directory
-	createProjectSymlinks(cwd, envPath, projectPath)
+	createProjectSymlinks(cwd, envPath, projectPath, projectName, envName)
 
 	// Load or create runtime
 	runtime, _ := environment.LoadRuntime(envPath)
@@ -64,15 +64,36 @@ func PrepareEnv(envName string) error {
 		runtime = environment.NewRuntime(projectName, envName)
 	}
 
-	// Setup port manager and allocate ports
+	// Setup port manager and initialize with existing runtime ports
 	pm := ports.NewPortManager(envPath)
-	commonPorts := []int{3000, 3001, 3002, 5432, 6379, 8080, 8081}
+	
+	// Initialize port manager with existing runtime ports to respect them
+	if len(runtime.Ports) > 0 {
+		pm.InitializeWithPorts(runtime.Ports)
+	}
+	
+	// Reload config for pattern matching (already loaded above)
+	if cfg == nil {
+		cfgPath := filepath.Join(paths.DenvHome(), "config.yaml")
+		cfg, _ = config.LoadConfig(cfgPath)
+	}
+	
+	// Collect ports that are actually used by environment variables
+	usedPorts := collectUsedPorts(os.Environ(), cfg)
 	portMappings := make(map[string]string)
 	
-	for _, port := range commonPorts {
-		mappedPort := pm.GetPort(port)
-		runtime.Ports[port] = mappedPort
-		portMappings[strconv.Itoa(port)] = strconv.Itoa(mappedPort)
+	for port := range usedPorts {
+		// Check if we already have a mapping in runtime
+		if existingPort, exists := runtime.Ports[port]; exists {
+			// Use existing mapping
+			runtime.Ports[port] = existingPort
+			portMappings[strconv.Itoa(port)] = strconv.Itoa(existingPort)
+		} else {
+			// Get new mapping from port manager
+			mappedPort := pm.GetPort(port)
+			runtime.Ports[port] = mappedPort
+			portMappings[strconv.Itoa(port)] = strconv.Itoa(mappedPort)
+		}
 	}
 
 	// Create session

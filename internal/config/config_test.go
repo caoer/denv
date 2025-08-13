@@ -16,7 +16,7 @@ func TestLoadConfig(t *testing.T) {
 	yaml := `projects:
   /path/to/project: custom-name
 patterns:
-  - pattern: "*_PORT|PORT"
+  - pattern: "*_PORT | PORT"
     rule:
       action: random_port
       range: [30000, 39999]
@@ -31,14 +31,14 @@ patterns:
 	// Find the pattern in the slice
 	found := false
 	for _, pr := range cfg.Patterns {
-		if pr.Pattern == "*_PORT|PORT" {
+		if pr.Pattern == "*_PORT | PORT" {
 			assert.Equal(t, "random_port", pr.Rule.Action)
 			assert.Equal(t, []int{30000, 39999}, pr.Rule.Range)
 			found = true
 			break
 		}
 	}
-	assert.True(t, found, "Pattern *_PORT|PORT should exist")
+	assert.True(t, found, "Pattern *_PORT | PORT should exist")
 }
 
 func TestDefaultConfig(t *testing.T) {
@@ -50,7 +50,7 @@ func TestDefaultConfig(t *testing.T) {
 	// Check that default patterns are present
 	found := false
 	for _, pr := range cfg.Patterns {
-		if pr.Pattern == "*_PORT|PORT" {
+		if pr.Pattern == "*_PORT | PORT" {
 			found = true
 			break
 		}

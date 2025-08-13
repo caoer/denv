@@ -84,72 +84,68 @@ func defaultPatterns() []PatternRule {
 	// System patterns must be listed before generic patterns
 	var patterns []PatternRule
 	
-	// System PATH variables that should not be modified
-	systemPaths := []string{
-		"CARGO_HOME",
-		"RUSTUP_HOME",
-		"PNPM_HOME",
-		"NIX_PATH",
-		"NIX_USER_PROFILE_DIR",
-		"BROWSERS_PROFILE_PATH",
-		"SOLANA_HOME",
-		"KITTY_INSTALLATION_DIR",
-		"ZSH_CACHE_DIR",
-		"MINIO_HOME",
-		"DOT_PATH",
-		"FORGIT_INSTALL_DIR",
-		"__MISE_ORIG_PATH",
-		"TMUX_PLUGIN_MANAGER_PATH",
-		"GOPATH",
-		"GOROOT",
-		"NVM_DIR",
-		"RBENV_ROOT",
-		"PYENV_ROOT",
-		"SDKMAN_DIR",
-		"HOMEBREW_PREFIX",
-		"HOMEBREW_CELLAR",
-		"HOMEBREW_REPOSITORY",
-	}
+	// Group related system paths using OR syntax for better readability
+	// Core system and programming language environments
+	patterns = append(patterns, PatternRule{
+		Pattern: "DENV_HOME | CARGO_HOME | RUSTUP_HOME | GOPATH | GOROOT | NVM_DIR | RBENV_ROOT | PYENV_ROOT | PNPM_HOME | SDKMAN_DIR",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
 	
-	// Add keep rules for system paths (these come first)
-	for _, path := range systemPaths {
-		patterns = append(patterns, PatternRule{
-			Pattern: path,
-			Rule: Rule{
-				Action: "keep",
-			},
-		})
-	}
+	// System and package managers
+	patterns = append(patterns, PatternRule{
+		Pattern: "HOMEBREW_PREFIX | HOMEBREW_CELLAR | HOMEBREW_REPOSITORY | NIX_PATH | NIX_USER_PROFILE_DIR",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
+	
+	// Application-specific paths
+	patterns = append(patterns, PatternRule{
+		Pattern: "SOLANA_HOME | KITTY_INSTALLATION_DIR | MINIO_HOME | TMUX_PLUGIN_MANAGER_PATH | BROWSERS_PROFILE_PATH",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
+	
+	// Shell and tool configurations
+	patterns = append(patterns, PatternRule{
+		Pattern: "ZSH_CACHE_DIR | DOT_PATH | FORGIT_INSTALL_DIR | __MISE_ORIG_PATH",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
 	
 	// Add generic patterns after system-specific ones
 	patterns = append(patterns, PatternRule{
-		Pattern: "*_PORT|PORT",
+		Pattern: "*_PORT | PORT",
 		Rule: Rule{
 			Action: "random_port",
 			Range:  []int{30000, 39999},
 		},
 	})
 	patterns = append(patterns, PatternRule{
-		Pattern: "*_ROOT|*_DIR|*_PATH|*_HOME",
+		Pattern: "*_ROOT | *_DIR | *_PATH | *_HOME",
 		Rule: Rule{
 			Action: "isolate",
 			Base:   "${DENV_ENV}",
 		},
 	})
 	patterns = append(patterns, PatternRule{
-		Pattern: "*_URL|*_URI|*_ENDPOINT|DATABASE_URL|REDIS_URL",
+		Pattern: "*_URL | *_URI | *_ENDPOINT | DATABASE_URL | REDIS_URL",
 		Rule: Rule{
 			Action: "rewrite_ports",
 		},
 	})
 	patterns = append(patterns, PatternRule{
-		Pattern: "*_KEY|*_TOKEN|*_SECRET|*_PASSWORD|*_CREDENTIAL",
+		Pattern: "*_KEY | *_TOKEN | *_SECRET | *_PASSWORD | *_CREDENTIAL",
 		Rule: Rule{
 			Action: "keep",
 		},
 	})
 	patterns = append(patterns, PatternRule{
-		Pattern: "*_HOST|*_HOSTNAME",
+		Pattern: "*_HOST | *_HOSTNAME",
 		Rule: Rule{
 			Action: "keep",
 			OnlyIf: []string{"localhost", "127.0.0.1", "0.0.0.0"},

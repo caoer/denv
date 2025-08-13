@@ -32,7 +32,7 @@ func TestDetectShell(t *testing.T) {
 
 func TestShellCommand(t *testing.T) {
 	envScript := "/tmp/test-env.sh"
-	
+
 	tests := []struct {
 		shellType ShellType
 		expected  []string
@@ -65,7 +65,7 @@ func TestShellCommand(t *testing.T) {
 
 func TestGenerateShellWrapper(t *testing.T) {
 	env := map[string]string{
-		"TEST_VAR": "value",
+		"TEST_VAR":  "value",
 		"PORT_3000": "33000",
 	}
 

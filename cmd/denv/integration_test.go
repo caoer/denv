@@ -49,9 +49,8 @@ func TestFullWorkflow(t *testing.T) {
 	err = commands.List()
 	assert.NoError(t, err)
 
-	// Test: Clean environment (should fail with active session)
-	err = commands.Clean("test-env")
-	// Should succeed in test mode as no real session exists
+	// Test: Remove environment (should succeed in test mode as no real session exists)
+	err = commands.Rm("test-env", false)
 	assert.NoError(t, err)
 	assert.NoDirExists(t, envPath)
 }
@@ -68,6 +67,7 @@ func TestMultipleEnvironments(t *testing.T) {
 	os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
+	os.Setenv("PORT", "3000") // Add a port env variable to test port allocation
 
 	// Create multiple environments
 	err := commands.Enter("dev")

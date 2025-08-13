@@ -34,18 +34,32 @@ func main() {
 			os.Exit(1)
 		}
 
-	case "clean":
-		if len(os.Args) < 3 {
-			fmt.Fprintf(os.Stderr, "Error: environment name required\n")
+	case "rm":
+		// Parse flags for rm command
+		fs := flag.NewFlagSet("rm", flag.ExitOnError)
+		all := fs.Bool("all", false, "Remove all inactive environments")
+		fs.Parse(os.Args[2:])
+
+		envName := ""
+		if !*all && fs.NArg() < 1 {
+			fmt.Fprintf(os.Stderr, "Error: environment name required (or use --all)\n")
 			os.Exit(1)
 		}
-		if err := commands.Clean(os.Args[2]); err != nil {
+		if fs.NArg() > 0 {
+			envName = fs.Arg(0)
+		}
+		
+		if err := commands.Rm(envName, *all); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 
 	case "ps":
-		if err := commands.Ps(); err != nil {
+		envName := ""
+		if len(os.Args) > 2 {
+			envName = os.Args[2]
+		}
+		if err := commands.Ps(envName); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
@@ -131,7 +145,8 @@ Usage:
   denv enter [name]      Enter environment (default: "default")
   denv ls                List all environments across all projects
   denv ps                Show current environment status
-  denv clean <name>      Remove environment
+  denv rm <name>         Remove environment
+  denv rm --all          Remove all inactive environments
   denv sessions          Show active sessions
   denv sessions --cleanup Clean orphaned sessions
   denv sessions --kill   Terminate all sessions

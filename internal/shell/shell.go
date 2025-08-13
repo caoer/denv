@@ -37,7 +37,7 @@ func DetectShell(shellPath string) (ShellType, string) {
 	}
 
 	base := filepath.Base(shellPath)
-	
+
 	switch {
 	case strings.Contains(base, "zsh"):
 		return Zsh, "zsh"
@@ -58,19 +58,19 @@ func GetShellCommand(shellType ShellType, envScript string) []string {
 	case Bash:
 		// Bash supports --init-file to source a script on startup
 		return []string{"bash", "--init-file", envScript}
-		
+
 	case Zsh:
 		// Zsh doesn't have --init-file, so we source and exec
 		return []string{"zsh", "-c", fmt.Sprintf("source %s && exec zsh", envScript)}
-		
+
 	case Fish:
 		// Fish uses different syntax for sourcing
 		return []string{"fish", "-c", fmt.Sprintf("source %s; and exec fish", envScript)}
-		
+
 	case Sh:
 		// Plain sh uses . instead of source
 		return []string{"sh", "-c", fmt.Sprintf(". %s && exec sh", envScript)}
-		
+
 	default:
 		// Default to bash behavior
 		return []string{"bash", "--init-file", envScript}
@@ -93,7 +93,7 @@ func generateFishWrapper(env map[string]string) string {
 
 	// Fish uses different syntax
 	script.WriteString("#!/usr/bin/env fish\n\n")
-	
+
 	// Export environment variables (Fish syntax)
 	script.WriteString("# Set environment variables\n")
 	for key, value := range env {
@@ -124,12 +124,15 @@ func generateFishWrapper(env map[string]string) string {
 	script.WriteString("    source \"$DENV_PROJECT/hooks/on-enter.sh\"\n")
 	script.WriteString("end\n\n")
 
-	// Modify prompt (Fish syntax)
-	script.WriteString("# Modify prompt\n")
-	script.WriteString("function fish_prompt\n")
-	script.WriteString("    echo -n \"($DENV_ENV_NAME) \"\n")
-	script.WriteString("    __fish_default_prompt\n")
-	script.WriteString("end\n")
+	// Modify prompt with color (Fish syntax)
+	script.WriteString("# Modify prompt with color\n")
+	envName := env["DENV_ENV_NAME"]
+	if envName == "" {
+		envName = "denv"
+	}
+	promptFunc := GenerateColoredPrompt(envName, Fish)
+	script.WriteString(promptFunc)
+	script.WriteString("\n")
 
 	return script.String()
 }
@@ -141,3 +144,4 @@ func escapeFishValue(value string) string {
 	value = strings.ReplaceAll(value, `$`, `\$`)
 	return value
 }
+

@@ -72,11 +72,11 @@ func TestEscapeShellValue(t *testing.T) {
 
 func TestCleanupScript(t *testing.T) {
 	script := GenerateCleanupScript("/tmp/denv/sessions/abc123.lock", "/tmp/denv/project/hooks/on-exit.sh")
-	
+
 	// Test: Should remove lock file
 	assert.Contains(t, script, "rm -f")
 	assert.Contains(t, script, "abc123.lock")
-	
+
 	// Test: Should run exit hook if exists
 	assert.Contains(t, script, "on-exit.sh")
 }

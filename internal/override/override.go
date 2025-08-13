@@ -12,8 +12,11 @@ import (
 )
 
 func MatchesPattern(pattern, key string) bool {
-	// Handle OR patterns (e.g., "*_PORT|PORT")
+	// Handle OR patterns (e.g., "*_PORT | PORT")
 	patterns := strings.Split(pattern, "|")
+	for i := range patterns {
+		patterns[i] = strings.TrimSpace(patterns[i])
+	}
 	for _, p := range patterns {
 		if matchSinglePattern(p, key) {
 			return true

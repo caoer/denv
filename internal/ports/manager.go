@@ -54,6 +54,23 @@ func (pm *PortManager) GetPort(originalPort int) int {
 	return newPort
 }
 
+// InitializeWithPorts sets the port mappings from an existing runtime
+// This ensures that existing port mappings are respected
+func (pm *PortManager) InitializeWithPorts(ports map[int]int) {
+	pm.mu.Lock()
+	defer pm.mu.Unlock()
+
+	// Merge the provided ports with existing mappings
+	// Existing mappings take precedence to maintain consistency
+	for orig, mapped := range ports {
+		if _, exists := pm.mappings[orig]; !exists {
+			pm.mappings[orig] = mapped
+		}
+	}
+	
+	pm.save()
+}
+
 func (pm *PortManager) load() {
 	portFile := filepath.Join(pm.dir, "ports.json")
 	data, err := os.ReadFile(portFile)

@@ -11,6 +11,65 @@ import (
 	"github.com/zitao/denv/internal/paths"
 )
 
+// EnvironmentInfo represents basic environment information
+type EnvironmentInfo struct {
+	Project     string
+	Environment string
+	Sessions    int
+	Ports       int
+}
+
+// ListEnvironments returns a list of all environments without printing
+func ListEnvironments() ([]EnvironmentInfo, error) {
+	denvHome := paths.DenvHome()
+	
+	// Find all environment directories
+	entries, err := os.ReadDir(denvHome)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read denv home: %w", err)
+	}
+
+	var environments []EnvironmentInfo
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		
+		name := entry.Name()
+		// Parse project-environment pattern
+		parts := strings.SplitN(name, "-", 2)
+		if len(parts) == 2 {
+			project := parts[0]
+			env := parts[1]
+			
+			envPath := filepath.Join(denvHome, name)
+			runtime, _ := environment.LoadRuntime(envPath)
+			
+			sessionCount := 0
+			portCount := 0
+			if runtime != nil {
+				// Count active sessions
+				for _, session := range runtime.Sessions {
+					if sessionExists(session.PID) {
+						sessionCount++
+					}
+				}
+				portCount = len(runtime.Ports)
+			}
+			
+			environments = append(environments, EnvironmentInfo{
+				Project:     project,
+				Environment: env,
+				Sessions:    sessionCount,
+				Ports:       portCount,
+			})
+		}
+	}
+
+	return environments, nil
+}
+
 // List shows all environments across all projects (previously ps -a)
 func List() error {
 	denvHome := paths.DenvHome()

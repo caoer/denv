@@ -46,11 +46,29 @@ func GenerateWrapper(env map[string]string) string {
 	script.WriteString("\n")
 	script.WriteString("fi\n\n")
 
-	// Start shell
-	script.WriteString("# Start shell with modified prompt\n")
-	script.WriteString(`PS1="($DENV_ENV_NAME) $PS1"`)
+	// Start shell with colored prompt
+	script.WriteString("# Start shell with colored prompt\n")
+	// Extract environment name from the env map
+	envName := env["DENV_ENV_NAME"]
+	if envName == "" {
+		envName = "denv"
+	}
+	// Detect shell type from SHELL env var for proper prompt generation
+	shellPath := env["SHELL"]
+	if shellPath == "" {
+		shellPath = "/bin/bash"
+	}
+	shellType, _ := DetectShell(shellPath)
+	promptCmd := GenerateColoredPrompt(envName, shellType)
+	script.WriteString(promptCmd)
 	script.WriteString("\n")
-	script.WriteString("export PS1\n")
+	
+	// Export the appropriate variable based on shell type
+	if shellType == Zsh {
+		script.WriteString("export PROMPT\n")
+	} else {
+		script.WriteString("export PS1\n")
+	}
 
 	return script.String()
 }
@@ -100,3 +118,4 @@ func escapeShellValue(value string) string {
 	value = strings.ReplaceAll(value, "`", "\\`")
 	return value
 }
+

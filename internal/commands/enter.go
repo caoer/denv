@@ -5,11 +5,13 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/zitao/denv/internal/color"
 	"github.com/zitao/denv/internal/config"
 	"github.com/zitao/denv/internal/environment"
 	"github.com/zitao/denv/internal/override"
@@ -46,7 +48,7 @@ func Enter(envName string) error {
 	os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
 
 	// Create .denv symlinks in project directory
-	if err := createProjectSymlinks(cwd, envPath, projectPath); err != nil {
+	if err := createProjectSymlinks(cwd, envPath, projectPath, projectName, envName); err != nil {
 		// Log error but don't fail (symlinks are optional convenience)
 		fmt.Fprintf(os.Stderr, "Warning: failed to create symlinks: %v\n", err)
 	}
@@ -57,14 +59,26 @@ func Enter(envName string) error {
 		runtime = environment.NewRuntime(projectName, envName)
 	}
 
-	// Setup port manager
+	// Setup port manager and initialize with existing runtime ports
 	pm := ports.NewPortManager(envPath)
 	
-	// Get common ports
-	commonPorts := []int{3000, 3001, 3002, 5432, 6379, 8080, 8081}
-	for _, port := range commonPorts {
-		mappedPort := pm.GetPort(port)
-		runtime.Ports[port] = mappedPort
+	// Initialize port manager with existing runtime ports to respect them
+	if len(runtime.Ports) > 0 {
+		pm.InitializeWithPorts(runtime.Ports)
+	}
+	
+	// Collect ports that are actually used by environment variables
+	usedPorts := collectUsedPorts(os.Environ(), cfg)
+	for port := range usedPorts {
+		// Check if we already have a mapping in runtime
+		if existingPort, exists := runtime.Ports[port]; exists {
+			// Use existing mapping
+			runtime.Ports[port] = existingPort
+		} else {
+			// Get new mapping from port manager
+			mappedPort := pm.GetPort(port)
+			runtime.Ports[port] = mappedPort
+		}
 	}
 
 	// Create session (skip in test mode)
@@ -162,7 +176,65 @@ func Enter(envName string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	return cmd.Run()
+	// Run the shell and wait for it to exit
+	err = cmd.Run()
+	
+	// Clean up the session after shell exits
+	cleanupSession(envPath, sessionHandle)
+	
+	return err
+}
+
+// cleanupSession removes the session from runtime and releases the lock
+func cleanupSession(envPath string, sessionHandle *session.SessionHandle) {
+	if sessionHandle == nil {
+		return
+	}
+	
+	// Release the session lock
+	sessionHandle.Release()
+	
+	// Remove session from runtime.json
+	runtime, err := environment.LoadRuntime(envPath)
+	if err != nil || runtime == nil {
+		return
+	}
+	
+	// Remove this session from the runtime
+	delete(runtime.Sessions, sessionHandle.ID)
+	
+	// Save the updated runtime
+	environment.SaveRuntime(envPath, runtime)
+	
+	// Remove the lock file
+	lockPath := filepath.Join(envPath, "sessions", sessionHandle.ID+".lock")
+	os.Remove(lockPath)
+	
+	// Clean up .denv symlinks if no more sessions
+	if len(runtime.Sessions) == 0 {
+		cleanupProjectSymlinks(runtime.Project, runtime.Environment)
+	}
+}
+
+// cleanupProjectSymlinks removes the symlinks in .denv directory
+func cleanupProjectSymlinks(projectName, envName string) {
+	cwd, _ := os.Getwd()
+	denvDir := filepath.Join(cwd, ".denv")
+	
+	// Remove environment-specific symlink
+	envLinkName := fmt.Sprintf("*%s-%s", projectName, envName)
+	envLink := filepath.Join(denvDir, envLinkName)
+	os.Remove(envLink)
+	
+	// Check if there are any other active environments for this project
+	pattern := filepath.Join(denvDir, fmt.Sprintf("*%s-*", projectName))
+	matches, _ := filepath.Glob(pattern)
+	
+	// If no other environments, remove the project symlink too
+	if len(matches) == 0 {
+		projectLink := filepath.Join(denvDir, projectName)
+		os.Remove(projectLink)
+	}
 }
 
 func splitEnv(env string) []string {
@@ -172,26 +244,91 @@ func splitEnv(env string) []string {
 	return []string{env}
 }
 
-func createProjectSymlinks(projectDir, envPath, projectPath string) error {
+// collectUsedPorts analyzes environment variables to find which ports are actually referenced
+func collectUsedPorts(environ []string, cfg *config.Config) map[int]bool {
+	ports := make(map[int]bool)
+	envMap := make(map[string]string)
+	
+	// Parse environment into map
+	for _, e := range environ {
+		if kv := splitEnv(e); len(kv) == 2 {
+			envMap[kv[0]] = kv[1]
+		}
+	}
+	
+	// Check each environment variable against patterns
+	for key, value := range envMap {
+		for _, pr := range cfg.Patterns {
+			if override.MatchesPattern(pr.Pattern, key) {
+				switch pr.Rule.Action {
+				case "random_port":
+					// This is a port variable, extract the port number
+					if port, err := strconv.Atoi(value); err == nil {
+						ports[port] = true
+					}
+				case "rewrite_ports":
+					// Extract ports from URLs
+					extractedPorts := extractPortsFromURL(value)
+					for _, p := range extractedPorts {
+						ports[p] = true
+					}
+				}
+				break // First matching pattern wins
+			}
+		}
+	}
+	
+	return ports
+}
+
+// extractPortsFromURL finds port numbers in URLs
+func extractPortsFromURL(url string) []int {
+	var ports []int
+	// Simple regex to find :PORT patterns
+	pattern := regexp.MustCompile(`:([0-9]+)`)
+	matches := pattern.FindAllStringSubmatch(url, -1)
+	for _, match := range matches {
+		if len(match) > 1 {
+			if port, err := strconv.Atoi(match[1]); err == nil {
+				ports = append(ports, port)
+			}
+		}
+	}
+	return ports
+}
+
+func createProjectSymlinks(projectDir, envPath, projectPath, projectName, envName string) error {
 	// Create .denv directory in project
 	denvDir := filepath.Join(projectDir, ".denv")
 	if err := os.MkdirAll(denvDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .denv directory: %w", err)
 	}
 
-	// Create or update current symlink (points to environment)
-	currentLink := filepath.Join(denvDir, "current")
-	
-	// Remove existing symlink if it exists
-	os.Remove(currentLink)
-	
-	// Create new symlink
-	if err := os.Symlink(envPath, currentLink); err != nil {
-		return fmt.Errorf("failed to create current symlink: %w", err)
+	// Clean up old symlink naming convention
+	oldLinks := []string{"current", "project"}
+	for _, link := range oldLinks {
+		linkPath := filepath.Join(denvDir, link)
+		// Remove if it's a symlink (preserve regular files)
+		if info, err := os.Lstat(linkPath); err == nil && info.Mode()&os.ModeSymlink != 0 {
+			os.Remove(linkPath)
+		}
 	}
 
-	// Create or update project symlink (points to shared project directory)
-	projectLink := filepath.Join(denvDir, "project")
+	// Create environment-specific symlink with star prefix
+	// Format: *projectname-environment
+	envLinkName := fmt.Sprintf("*%s-%s", projectName, envName)
+	envLink := filepath.Join(denvDir, envLinkName)
+	
+	// Remove existing symlink if it exists
+	os.Remove(envLink)
+	
+	// Create new symlink
+	if err := os.Symlink(envPath, envLink); err != nil {
+		return fmt.Errorf("failed to create environment symlink: %w", err)
+	}
+
+	// Create project symlink with just the project name
+	projectLink := filepath.Join(denvDir, projectName)
 	
 	// Remove existing symlink if it exists
 	os.Remove(projectLink)
@@ -272,6 +409,19 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 					// Show abbreviated URLs for readability
 					orig := truncateValue(override.Original, 50)
 					curr := truncateValue(override.Current, 50)
+					
+					// Colorize ports in URLs
+					for origPort, newPort := range ports {
+						origPortStr := fmt.Sprintf(":%d", origPort)
+						newPortStr := fmt.Sprintf(":%d", newPort)
+						if strings.Contains(override.Original, origPortStr) {
+							orig = color.ColorizePortInURL(orig, origPort)
+						}
+						if strings.Contains(override.Current, newPortStr) {
+							curr = color.ColorizePortInURL(curr, newPort)
+						}
+					}
+					
 					entry = fmt.Sprintf("   %s:\n      %s\n      → %s", key, orig, curr)
 					urlRewrites = append(urlRewrites, entry)
 				}
@@ -284,8 +434,34 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 		// Display each category
 		if len(portVars) > 0 {
 			fmt.Println("\n   [Port Variables]")
+			// Calculate max lengths for alignment
+			maxNameLen := 0
+			maxOrigLen := 0
 			for _, entry := range portVars {
-				fmt.Println(entry)
+				// Parse the entry to get name and values
+				parts := strings.SplitN(entry, ":", 2)
+				if len(parts) >= 2 {
+					name := strings.TrimSpace(parts[0])
+					if len(name) > maxNameLen {
+						maxNameLen = len(name)
+					}
+					// Extract original value
+					valParts := strings.Split(strings.TrimSpace(parts[1]), " → ")
+					if len(valParts) >= 1 {
+						if len(valParts[0]) > maxOrigLen {
+							maxOrigLen = len(valParts[0])
+						}
+					}
+				}
+			}
+			// Print with alignment and colors
+			for key, override := range overrides {
+				if override.Rule == "random_port" {
+					origPort, _ := strconv.Atoi(override.Original)
+					currPort, _ := strconv.Atoi(override.Current)
+					coloredPorts := color.ColorizePortWithAlignment(origPort, currPort, maxOrigLen)
+					fmt.Printf("   %-*s: %s\n", maxNameLen, key, coloredPorts)
+				}
 			}
 		}
 		
@@ -301,20 +477,6 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 			for _, entry := range isolatedPaths {
 				fmt.Println(entry)
 			}
-		}
-	}
-	
-	// Also show the core port mappings table for quick reference
-	if len(ports) > 0 {
-		fmt.Println("\n📍 Port Mapping Summary:")
-		// Sort ports for consistent display
-		var portList []int
-		for orig := range ports {
-			portList = append(portList, orig)
-		}
-		sort.Ints(portList)
-		for _, orig := range portList {
-			fmt.Printf("   %d → %d\n", orig, ports[orig])
 		}
 	}
 	
