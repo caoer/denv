@@ -38,7 +38,7 @@ func main() {
 		// Parse flags for rm command
 		fs := flag.NewFlagSet("rm", flag.ExitOnError)
 		all := fs.Bool("all", false, "Remove all inactive environments")
-		fs.Parse(os.Args[2:])
+		_ = fs.Parse(os.Args[2:])
 
 		envName := ""
 		if !*all && fs.NArg() < 1 {
@@ -69,7 +69,7 @@ func main() {
 		fs := flag.NewFlagSet("sessions", flag.ExitOnError)
 		cleanup := fs.Bool("cleanup", false, "Clean orphaned sessions")
 		kill := fs.Bool("kill", false, "Terminate all sessions")
-		fs.Parse(os.Args[2:])
+		_ = fs.Parse(os.Args[2:])
 
 		if err := commands.Sessions(*cleanup, *kill); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)

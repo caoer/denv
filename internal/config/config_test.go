@@ -21,7 +21,7 @@ patterns:
       action: random_port
       range: [30000, 39999]
 `
-	os.WriteFile(configPath, []byte(yaml), 0644)
+	_ = os.WriteFile(configPath, []byte(yaml), 0644)
 
 	// Test: Load config
 	cfg, err := LoadConfig(configPath)

@@ -89,7 +89,7 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	buf.ReadFrom(r)
+	_, _ = buf.ReadFrom(r)
 	output := buf.String()
 
 	assert.NoError(t, err)
@@ -182,7 +182,7 @@ func TestPsCommand_PortMappingSummaryShowsVariableNames(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	buf.ReadFrom(r)
+	_, _ = buf.ReadFrom(r)
 	output := buf.String()
 
 	assert.NoError(t, err)
@@ -247,7 +247,7 @@ func TestPsCommand_ShowsShortenedPaths(t *testing.T) {
 	os.Stdout = oldStdout
 
 	var buf bytes.Buffer
-	buf.ReadFrom(r)
+	_, _ = buf.ReadFrom(r)
 	output := buf.String()
 
 	assert.NoError(t, err)

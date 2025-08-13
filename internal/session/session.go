@@ -27,7 +27,7 @@ func CreateSession(envPath, name string) *SessionHandle {
 
 	// Create sessions directory
 	sessionsDir := filepath.Join(envPath, "sessions")
-	os.MkdirAll(sessionsDir, 0755)
+	_ = os.MkdirAll(sessionsDir, 0755)
 
 	// Try to acquire lock with the generated ID
 	lockPath := filepath.Join(sessionsDir, baseID+".lock")
@@ -61,7 +61,7 @@ func CreateSession(envPath, name string) *SessionHandle {
 
 func (s *SessionHandle) Release() {
 	if s.lock != nil {
-		s.lock.Release()
+		_ = s.lock.Release()
 		s.lock = nil
 	}
 }
@@ -104,7 +104,7 @@ func CleanupOrphaned(envPath string) int {
 	}
 
 	if cleaned > 0 {
-		environment.SaveRuntime(envPath, runtime)
+		_ = environment.SaveRuntime(envPath, runtime)
 	}
 
 	return cleaned
@@ -123,6 +123,6 @@ func ProcessExists(pid int) bool {
 
 func generateSessionID() string {
 	b := make([]byte, 6)
-	rand.Read(b)
+	_, _ = rand.Read(b)
 	return hex.EncodeToString(b)
 }

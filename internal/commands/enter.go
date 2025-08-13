@@ -34,14 +34,14 @@ func Enter(envName string) error {
 
 	// Detect project
 	cwd, _ := os.Getwd()
-	projectName, err := project.DetectProject(cwd)
+	_, err := project.DetectProject(cwd)
 	if err != nil {
 		return fmt.Errorf("failed to detect project: %w", err)
 	}
 
 	// Check for project override
 	cfg, _ := config.LoadConfig(filepath.Join(paths.DenvHome(), "config.yaml"))
-	projectName = project.DetectProjectWithConfig(cwd, cfg)
+	projectName := project.DetectProjectWithConfig(cwd, cfg)
 
 	// Create environment path
 	envPath := paths.EnvironmentPath(projectName, envName)
@@ -104,7 +104,7 @@ func Enter(envName string) error {
 	}
 
 	// Save runtime
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Prepare environment variables
 	env := make(map[string]string)
@@ -165,7 +165,7 @@ func Enter(envName string) error {
 	}
 	defer os.Remove(tmpFile.Name())
 	
-	tmpFile.WriteString(wrapperScript)
+	_, _ = tmpFile.WriteString(wrapperScript)
 	tmpFile.Close()
 
 	// Print entry message with all project environments

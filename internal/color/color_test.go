@@ -161,6 +161,7 @@ func TestFormatPortCardAlignment(t *testing.T) {
 	
 	// Check that all lines have their colons in different positions based on name length
 	// But the arrow positions should still be aligned
+	_ = colonPositions // TODO: Add assertions for colon positions if needed
 }
 
 // Helper to strip ANSI color codes for testing alignment

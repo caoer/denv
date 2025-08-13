@@ -56,7 +56,7 @@ func TestCleanupOrphanedSessions(t *testing.T) {
 			},
 		},
 	}
-	environment.SaveRuntime(tmpDir, runtime)
+	_ = environment.SaveRuntime(tmpDir, runtime)
 
 	// Test: Should detect and clean only orphaned
 	cleaned := CleanupOrphaned(tmpDir)

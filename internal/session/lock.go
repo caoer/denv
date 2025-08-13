@@ -43,7 +43,7 @@ func (l *FileLock) Release() error {
 	}
 
 	// Release the lock
-	syscall.Flock(int(l.file.Fd()), syscall.LOCK_UN)
+	_ = syscall.Flock(int(l.file.Fd()), syscall.LOCK_UN)
 	
 	// Close the file
 	err := l.file.Close()

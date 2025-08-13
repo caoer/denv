@@ -37,14 +37,14 @@ func PrepareEnv(envName string) error {
 
 	// Detect project
 	cwd, _ := os.Getwd()
-	projectName, err := project.DetectProject(cwd)
+	_, err := project.DetectProject(cwd)
 	if err != nil {
 		return fmt.Errorf("failed to detect project: %w", err)
 	}
 
 	// Check for project override
 	cfg, _ := config.LoadConfig(filepath.Join(paths.DenvHome(), "config.yaml"))
-	projectName = project.DetectProjectWithConfig(cwd, cfg)
+	projectName := project.DetectProjectWithConfig(cwd, cfg)
 
 	// Create environment path
 	envPath := paths.EnvironmentPath(projectName, envName)
@@ -56,7 +56,7 @@ func PrepareEnv(envName string) error {
 	os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
 
 	// Create .denv symlinks in project directory
-	createProjectSymlinks(cwd, envPath, projectPath, projectName, envName)
+	_ = createProjectSymlinks(cwd, envPath, projectPath, projectName, envName)
 
 	// Load or create runtime
 	runtime, _ := environment.LoadRuntime(envPath)
@@ -142,14 +142,14 @@ func GetEnvOverrides(envName string) error {
 
 	// Detect project
 	cwd, _ := os.Getwd()
-	projectName, err := project.DetectProject(cwd)
+	_, err := project.DetectProject(cwd)
 	if err != nil {
 		return fmt.Errorf("failed to detect project: %w", err)
 	}
 
 	// Load config
 	cfg, _ := config.LoadConfig(filepath.Join(paths.DenvHome(), "config.yaml"))
-	projectName = project.DetectProjectWithConfig(cwd, cfg)
+	projectName := project.DetectProjectWithConfig(cwd, cfg)
 
 	// Load runtime
 	envPath := paths.EnvironmentPath(projectName, envName)

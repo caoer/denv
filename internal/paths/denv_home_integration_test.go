@@ -111,11 +111,11 @@ func TestDenvHomeIntegration(t *testing.T) {
 		originalHome := os.Getenv("DENV_HOME")
 		originalWd, _ := os.Getwd()
 		defer os.Setenv("DENV_HOME", originalHome)
-		defer os.Chdir(originalWd)
+		defer func() { _ = os.Chdir(originalWd) }()
 		
 		// Create temp directory and change to it
 		tmpDir := t.TempDir()
-		os.Chdir(tmpDir)
+		_ = os.Chdir(tmpDir)
 		
 		// Set relative DENV_HOME
 		os.Setenv("DENV_HOME", "./my_denv")

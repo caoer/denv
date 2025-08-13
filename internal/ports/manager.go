@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"time"
 )
 
 type PortManager struct {
@@ -77,17 +76,22 @@ func (pm *PortManager) load() {
 	if err != nil {
 		return
 	}
-	json.Unmarshal(data, &pm.mappings)
+	if err := json.Unmarshal(data, &pm.mappings); err != nil {
+		return
+	}
 }
 
 func (pm *PortManager) save() {
 	portFile := filepath.Join(pm.dir, "ports.json")
-	data, _ := json.MarshalIndent(pm.mappings, "", "  ")
-	os.WriteFile(portFile, data, 0644)
+	data, err := json.MarshalIndent(pm.mappings, "", "  ")
+	if err != nil {
+		return
+	}
+	_ = os.WriteFile(portFile, data, 0644)
 }
 
 func FindFreePort(minPort, maxPort int) int {
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed is deprecated in Go 1.20+, auto-seeded by default
 	
 	// Try random ports in range
 	for i := 0; i < 1000; i++ {

@@ -19,14 +19,14 @@ func TestFullWorkflow(t *testing.T) {
 	// Setup test environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	// Initialize git repo
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
 
 	// Test: Enter environment
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
 
@@ -59,12 +59,12 @@ func TestMultipleEnvironments(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "multitest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/multitest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
 	os.Setenv("PORT", "3000") // Add a port env variable to test port allocation

@@ -39,7 +39,7 @@ func Sessions(cleanup, kill bool) error {
 					for id, sess := range runtime.Sessions {
 						if session.ProcessExists(sess.PID) {
 							proc, _ := os.FindProcess(sess.PID)
-							proc.Signal(os.Interrupt)
+							_ = proc.Signal(os.Interrupt)
 							fmt.Printf("Sent SIGTERM to session %s (PID %d)\n", id, sess.PID)
 						}
 					}

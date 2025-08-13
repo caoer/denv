@@ -31,7 +31,7 @@ func TestFileLocking(t *testing.T) {
 	lock3, err := AcquireLock(lockFile)
 	assert.NoError(t, err)
 	assert.NotNil(t, lock3)
-	lock3.Release()
+	_ = lock3.Release()
 }
 
 func TestLockAutoRelease(t *testing.T) {
@@ -88,7 +88,7 @@ func TestConcurrentLocking(t *testing.T) {
 			if err == nil {
 				acquired <- true
 				time.Sleep(10 * time.Millisecond)
-				lock.Release()
+				_ = lock.Release()
 			} else {
 				acquired <- false
 			}

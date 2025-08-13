@@ -93,7 +93,7 @@ func TestProjectUnset(t *testing.T) {
 		},
 		Patterns: defaultCfg.Patterns,
 	}
-	config.SaveConfig(configPath, cfg)
+	_ = config.SaveConfig(configPath, cfg)
 
 	// Test: Unset project override
 	var output bytes.Buffer
