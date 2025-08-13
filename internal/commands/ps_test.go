@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/testutil"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/testutil"
 )
 
 func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {

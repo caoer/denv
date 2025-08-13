@@ -8,7 +8,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/zitao/denv/internal/environment"
+	"github.com/caoer/denv/internal/environment"
 )
 
 type SessionHandle struct {

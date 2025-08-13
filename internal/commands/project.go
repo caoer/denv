@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/zitao/denv/internal/config"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/project"
+	"github.com/caoer/denv/internal/config"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/project"
 )
 
 // Project manages project name overrides

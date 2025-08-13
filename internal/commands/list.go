@@ -8,8 +8,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/paths"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/paths"
 )
 
 // EnvironmentInfo represents basic environment information

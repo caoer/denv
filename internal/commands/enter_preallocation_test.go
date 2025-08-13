@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/testutil"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/testutil"
 )
 
 func TestEnterCommand_NoPortPreallocation(t *testing.T) {

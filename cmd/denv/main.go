@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/zitao/denv/internal/commands"
+	"github.com/caoer/denv/internal/commands"
 )
 
 func main() {

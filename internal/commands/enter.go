@@ -11,15 +11,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/zitao/denv/internal/color"
-	"github.com/zitao/denv/internal/config"
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/override"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/ports"
-	"github.com/zitao/denv/internal/project"
-	"github.com/zitao/denv/internal/session"
-	"github.com/zitao/denv/internal/shell"
+	"github.com/caoer/denv/internal/color"
+	"github.com/caoer/denv/internal/config"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/override"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/ports"
+	"github.com/caoer/denv/internal/project"
+	"github.com/caoer/denv/internal/session"
+	"github.com/caoer/denv/internal/shell"
 )
 
 func Enter(envName string) error {

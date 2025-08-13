@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/zitao/denv/internal/config"
+	"github.com/caoer/denv/internal/config"
 )
 
 func DetectProject(dir string) (string, error) {

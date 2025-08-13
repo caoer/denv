@@ -1,4 +1,4 @@
-module github.com/zitao/denv
+module github.com/caoer/denv
 
 go 1.24.6
 

@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zitao/denv/internal/config"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/testutil"
+	"github.com/caoer/denv/internal/config"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/testutil"
 )
 
 func TestProjectShow(t *testing.T) {

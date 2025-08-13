@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zitao/denv/internal/config"
-	"github.com/zitao/denv/internal/environment"
+	"github.com/caoer/denv/internal/config"
+	"github.com/caoer/denv/internal/environment"
 )
 
 func MatchesPattern(pattern, key string) bool {

@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zitao/denv/internal/color"
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/project"
+	"github.com/caoer/denv/internal/color"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/project"
 )
 
 // Ps shows the current environment status and modifications or a specific environment if provided

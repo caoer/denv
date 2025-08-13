@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/paths"
-	"github.com/zitao/denv/internal/project"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/project"
 )
 
 // Export outputs environment variables for direnv integration

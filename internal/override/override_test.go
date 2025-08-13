@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/zitao/denv/internal/config"
+	"github.com/caoer/denv/internal/config"
 )
 
 func TestMatchesPatternWithOR(t *testing.T) {

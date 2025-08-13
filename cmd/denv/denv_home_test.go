@@ -8,9 +8,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/zitao/denv/internal/commands"
-	"github.com/zitao/denv/internal/environment"
-	"github.com/zitao/denv/internal/paths"
+	"github.com/caoer/denv/internal/commands"
+	"github.com/caoer/denv/internal/environment"
+	"github.com/caoer/denv/internal/paths"
 )
 
 func TestDenvHomeEndToEnd(t *testing.T) {
