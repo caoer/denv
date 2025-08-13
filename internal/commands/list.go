@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"syscall"
 
 	"github.com/zitao/denv/internal/environment"
 	"github.com/zitao/denv/internal/paths"
@@ -163,6 +164,6 @@ func sessionExists(pid int) bool {
 		return false
 	}
 	// Try to send signal 0 (doesn't actually send a signal, just checks if process exists)
-	err = process.Signal(os.Signal(nil))
+	err = process.Signal(syscall.Signal(0))
 	return err == nil
 }
