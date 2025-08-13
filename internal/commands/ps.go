@@ -65,10 +65,10 @@ func showCurrentEnvironment() error {
 		}
 	}
 
-	// Show environment paths
+	// Show environment paths with shortened display
 	fmt.Println("\n📂 Environment Paths:")
-	fmt.Printf("   Environment: %s\n", envPath)
-	fmt.Printf("   Project:     %s\n", os.Getenv("DENV_PROJECT"))
+	fmt.Printf("   Environment: %s\n", paths.ShortenPath(envPath, 0))
+	fmt.Printf("   Project:     %s\n", paths.ShortenPath(os.Getenv("DENV_PROJECT"), 0))
 	
 	fmt.Println("\n" + strings.Repeat("─", 50))
 	fmt.Println("Type 'exit' to leave this environment")
@@ -123,10 +123,10 @@ func showSpecificEnvironment(envName string) error {
 		}
 	}
 
-	// Show environment paths
+	// Show environment paths with shortened display
 	fmt.Println("\n📂 Environment Paths:")
-	fmt.Printf("   Environment: %s\n", envPath)
-	fmt.Printf("   Project:     %s\n", paths.ProjectPath(projectName))
+	fmt.Printf("   Environment: %s\n", paths.ShortenPath(envPath, 0))
+	fmt.Printf("   Project:     %s\n", paths.ShortenPath(paths.ProjectPath(projectName), 0))
 	
 	fmt.Println("\n" + strings.Repeat("─", 50))
 	fmt.Printf("Use 'denv enter %s' to enter this environment\n", envName)
@@ -198,60 +198,69 @@ func showEnvironmentDetails(runtime *environment.Runtime) {
 			}
 		}
 		
-		// Display port variables with mapping
+		// Display port variables with improved visual design
 		if len(portVars) > 0 {
-			fmt.Println("\n   [Port Variables]")
-			// Find max lengths for alignment
-			maxNameLen := 0
-			maxOrigLen := 0
-			for _, pv := range portVars {
-				if len(pv.name) > maxNameLen {
-					maxNameLen = len(pv.name)
-				}
-				if len(pv.override.Original) > maxOrigLen {
-					maxOrigLen = len(pv.override.Original)
-				}
-			}
-			// Print with alignment and colors
+			// Convert to PortMapping format for the new display
+			var portMappings []color.PortMapping
 			for _, pv := range portVars {
 				origPort, _ := strconv.Atoi(pv.override.Original)
 				currPort, _ := strconv.Atoi(pv.override.Current)
-				coloredPorts := color.ColorizePortWithAlignment(origPort, currPort, maxOrigLen)
-				fmt.Printf("   %-*s: %s\n", maxNameLen, pv.name, coloredPorts)
+				portMappings = append(portMappings, color.PortMapping{
+					Name:     pv.name,
+					Original: origPort,
+					Mapped:   currPort,
+				})
 			}
+			
+			// Use the new card display format
+			fmt.Print(color.FormatPortCard(portMappings))
 		}
 		
-		// Display URL rewrites
+		// Display URL rewrites with new card format
 		if len(urlRewrites) > 0 {
-			fmt.Println("\n   [URL/Connection String Rewrites]")
+			var urlRewriteList []color.URLRewrite
 			for _, ur := range urlRewrites {
-				// Show abbreviated URLs for readability
-				orig := truncateValue(ur.override.Original, 50)
-				curr := truncateValue(ur.override.Current, 50)
-				
 				// Colorize ports in URLs
-				// Extract ports from the URLs and colorize them
+				orig := ur.override.Original
+				curr := ur.override.Current
+				
 				for origPort, newPort := range runtime.Ports {
 					origPortStr := fmt.Sprintf(":%d", origPort)
 					newPortStr := fmt.Sprintf(":%d", newPort)
-					if strings.Contains(ur.override.Original, origPortStr) {
+					if strings.Contains(orig, origPortStr) {
 						orig = color.ColorizePortInURL(orig, origPort)
 					}
-					if strings.Contains(ur.override.Current, newPortStr) {
+					if strings.Contains(curr, newPortStr) {
 						curr = color.ColorizePortInURL(curr, newPort)
 					}
 				}
 				
-				fmt.Printf("   %s:\n      %s\n      → %s\n", ur.name, orig, curr)
+				urlRewriteList = append(urlRewriteList, color.URLRewrite{
+					Name:     ur.name,
+					Original: orig,
+					Current:  curr,
+				})
 			}
+			fmt.Print("\n")
+			fmt.Print(color.FormatURLCard(urlRewriteList))
 		}
 		
-		// Display isolated paths
+		// Display isolated paths with new card format
 		if len(isolatedPaths) > 0 {
-			fmt.Println("\n   [Isolated Paths]")
+			var pathList []color.IsolatedPath
 			for _, ip := range isolatedPaths {
-				fmt.Printf("   %s:\n      %s\n      → %s\n", ip.name, ip.override.Original, ip.override.Current)
+				// Apply path shortening to isolated paths
+				origShort := paths.ShortenPath(ip.override.Original, 0)
+				currShort := paths.ShortenPath(ip.override.Current, 0)
+				
+				pathList = append(pathList, color.IsolatedPath{
+					Name:     ip.name,
+					Original: origShort,
+					Current:  currShort,
+				})
 			}
+			fmt.Print("\n")
+			fmt.Print(color.FormatIsolatedPathCard(pathList))
 		}
 	}
 }

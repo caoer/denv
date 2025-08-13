@@ -23,6 +23,11 @@ import (
 )
 
 func Enter(envName string) error {
+	// Check if we're already in a denv environment
+	if existingEnv := os.Getenv("DENV_ENV_NAME"); existingEnv != "" {
+		return fmt.Errorf("already in denv environment '%s'. Please exit the current environment before entering a new one", existingEnv)
+	}
+	
 	if envName == "" {
 		envName = "default"
 	}
@@ -407,8 +412,14 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 			case "rewrite_ports":
 				if override.Original != override.Current {
 					// Show abbreviated URLs for readability
-					orig := truncateValue(override.Original, 50)
-					curr := truncateValue(override.Current, 50)
+					orig := override.Original
+					curr := override.Current
+					if len(orig) > 50 {
+						orig = orig[:47] + "..."
+					}
+					if len(curr) > 50 {
+						curr = curr[:47] + "..."
+					}
 					
 					// Colorize ports in URLs
 					for origPort, newPort := range ports {
@@ -433,36 +444,27 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 		
 		// Display each category
 		if len(portVars) > 0 {
-			fmt.Println("\n   [Port Variables]")
-			// Calculate max lengths for alignment
-			maxNameLen := 0
-			maxOrigLen := 0
-			for _, entry := range portVars {
-				// Parse the entry to get name and values
-				parts := strings.SplitN(entry, ":", 2)
-				if len(parts) >= 2 {
-					name := strings.TrimSpace(parts[0])
-					if len(name) > maxNameLen {
-						maxNameLen = len(name)
-					}
-					// Extract original value
-					valParts := strings.Split(strings.TrimSpace(parts[1]), " → ")
-					if len(valParts) >= 1 {
-						if len(valParts[0]) > maxOrigLen {
-							maxOrigLen = len(valParts[0])
-						}
-					}
-				}
-			}
-			// Print with alignment and colors
+			// Convert to PortMapping format for the new display
+			var portMappings []color.PortMapping
 			for key, override := range overrides {
 				if override.Rule == "random_port" {
 					origPort, _ := strconv.Atoi(override.Original)
 					currPort, _ := strconv.Atoi(override.Current)
-					coloredPorts := color.ColorizePortWithAlignment(origPort, currPort, maxOrigLen)
-					fmt.Printf("   %-*s: %s\n", maxNameLen, key, coloredPorts)
+					portMappings = append(portMappings, color.PortMapping{
+						Name:     key,
+						Original: origPort,
+						Mapped:   currPort,
+					})
 				}
 			}
+			
+			// Sort port mappings by name for consistent display
+			sort.Slice(portMappings, func(i, j int) bool {
+				return portMappings[i].Name < portMappings[j].Name
+			})
+			
+			// Use the new card display format
+			fmt.Print(color.FormatPortCard(portMappings))
 		}
 		
 		if len(urlRewrites) > 0 {
@@ -484,10 +486,4 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 	fmt.Println("✨ Environment ready! Type 'exit' to leave.")
 }
 
-func truncateValue(s string, maxLen int) string {
-	if len(s) <= maxLen {
-		return s
-	}
-	return s[:maxLen-3] + "..."
-}
 

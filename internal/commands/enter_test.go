@@ -49,3 +49,31 @@ func TestEnterWithDifferentShells(t *testing.T) {
 		})
 	}
 }
+
+func TestEnterPreventNestedEnvironments(t *testing.T) {
+	// Setup
+	tmpDir := t.TempDir()
+	tmpProject := filepath.Join(t.TempDir(), "nestedtest")
+	os.MkdirAll(tmpProject, 0755)
+
+	testutil.RunCmd(t, tmpProject, "git", "init")
+	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/nestedtest.git")
+
+	os.Chdir(tmpProject)
+	os.Setenv("DENV_HOME", tmpDir)
+	os.Setenv("DENV_TEST_MODE", "1")
+	
+	// Set DENV_ENV_NAME to simulate being inside an environment
+	os.Setenv("DENV_ENV_NAME", "existing-env")
+	defer os.Unsetenv("DENV_ENV_NAME")
+
+	// Test: Should fail when trying to enter a new environment
+	err := Enter("test")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "already in")
+	assert.Contains(t, err.Error(), "existing-env")
+	
+	// Verify no new environment was created
+	envPath := filepath.Join(tmpDir, "nestedtest-test")
+	assert.NoDirExists(t, envPath)
+}

@@ -1,3 +1,40 @@
 denv
 !cmd/denv
 tmp/
+
+# Coverage files
+*.out
+*.cov
+coverage.txt
+coverage.html
+.coverage
+
+# GoReleaser
+dist/
+.goreleaser/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test artifacts
+*.test
+*.prof
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Build artifacts
+bin/
+build/
+
+# Docker
+.dockerignore

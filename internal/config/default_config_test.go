@@ -65,6 +65,7 @@ func TestSystemPathsAreKept(t *testing.T) {
 		"CARGO_HOME",
 		"RUSTUP_HOME",
 		"PNPM_HOME",
+		"DIRENV_DIR",
 		"NIX_PATH",
 		"NIX_USER_PROFILE_DIR",
 		"GOPATH",
