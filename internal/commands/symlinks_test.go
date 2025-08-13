@@ -31,18 +31,18 @@ func TestCreateSymlinks(t *testing.T) {
 	denvDir := filepath.Join(tmpProject, ".denv")
 	assert.DirExists(t, denvDir)
 
-	// Test: current symlink should exist and point to environment
-	currentLink := filepath.Join(denvDir, "current")
-	assert.FileExists(t, currentLink)
+	// Test: environment symlink should exist with star prefix
+	envLink := filepath.Join(denvDir, "*symlinktest-test")
+	assert.FileExists(t, envLink)
 	
 	// Check symlink target
-	target, err := os.Readlink(currentLink)
+	target, err := os.Readlink(envLink)
 	assert.NoError(t, err)
 	expectedEnvPath := paths.EnvironmentPath("symlinktest", "test")
 	assert.Equal(t, expectedEnvPath, target)
 
-	// Test: project symlink should exist and point to project dir
-	projectLink := filepath.Join(denvDir, "project")
+	// Test: project symlink should exist with project name
+	projectLink := filepath.Join(denvDir, "symlinktest")
 	assert.FileExists(t, projectLink)
 	
 	target2, err := os.Readlink(projectLink)
@@ -68,17 +68,18 @@ func TestUpdateSymlinksOnEnvironmentChange(t *testing.T) {
 	err := Enter("dev")
 	assert.NoError(t, err)
 
-	// Check current symlink points to dev
-	currentLink := filepath.Join(tmpProject, ".denv", "current")
-	target1, _ := os.Readlink(currentLink)
+	// Check environment symlink points to dev
+	envLink := filepath.Join(tmpProject, ".denv", "*symlinkswitchtest-dev")
+	target1, _ := os.Readlink(envLink)
 	assert.Contains(t, target1, "symlinkswitchtest-dev")
 
 	// Enter different environment
 	err = Enter("prod")
 	assert.NoError(t, err)
 
-	// Check current symlink now points to prod
-	target2, _ := os.Readlink(currentLink)
+	// Check environment symlink now points to prod
+	envLink2 := filepath.Join(tmpProject, ".denv", "*symlinkswitchtest-prod")
+	target2, _ := os.Readlink(envLink2)
 	assert.Contains(t, target2, "symlinkswitchtest-prod")
 }
 

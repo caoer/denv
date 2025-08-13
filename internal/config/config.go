@@ -111,7 +111,7 @@ func defaultPatterns() []PatternRule {
 	
 	// Shell and tool configurations
 	patterns = append(patterns, PatternRule{
-		Pattern: "ZSH_CACHE_DIR | DOT_PATH | FORGIT_INSTALL_DIR | __MISE_ORIG_PATH",
+		Pattern: "ZSH_CACHE_DIR | DOT_PATH | FORGIT_INSTALL_DIR | __MISE_ORIG_PATH | DIRENV_DIR",
 		Rule: Rule{
 			Action: "keep",
 		},

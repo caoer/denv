@@ -77,9 +77,10 @@ func TestReplaceExistingSymlinks(t *testing.T) {
 	_, err = os.Stat(oldCurrentLink)
 	assert.True(t, os.IsNotExist(err), "Old 'current' symlink should be removed")
 
-	// Old "project" symlink should be removed
+	// Project symlink should be replaced (not removed) since project name is "project"
+	// The new symlink has the same name but points to the correct target
 	_, err = os.Stat(oldProjectLink)
-	assert.True(t, os.IsNotExist(err), "Old 'project' symlink should be removed")
+	assert.NoError(t, err, "Project symlink should exist")
 
 	// New environment symlink should exist with star prefix
 	newEnvLink := filepath.Join(denvDir, "*project-new")
