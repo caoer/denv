@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolve final test issues ([ae545e7](https://github.com/caoer/denv/commit/ae545e7e4a4e582b556fba7395f12fdf4ba441c3))
 - Resolve remaining CI issues ([5c940c0](https://github.com/caoer/denv/commit/5c940c067e1b5b759698fe9ae7a254e0d8c5d586))
 - Final linting issue in symlinks_test.go ([e70d245](https://github.com/caoer/denv/commit/e70d245930f5a607c639656a58dcecbf4c9c15d0))
+- Resolve gosec security issues ([c009a01](https://github.com/caoer/denv/commit/c009a011da0293ffbcc30a73e56100d15eb3aff9))
 
 ### CI/CD
 
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([5639e55](https://github.com/caoer/denv/commit/5639e554e2291f30f21da501080c20e550a73403))
 - Update repository references to use 'caoer' instead of 'yourusername' ([79b6acb](https://github.com/caoer/denv/commit/79b6acbaa15991e735d7a8d4d0de7374a9707120))
 - Update changelog [skip ci] ([aa1b74e](https://github.com/caoer/denv/commit/aa1b74e4f18f40fe8f4a9ba53dcc7c6ccf9d575d))
+- Update changelog [skip ci] ([5c496b2](https://github.com/caoer/denv/commit/5c496b21aac1f062acbf5061a79c248daeef9038))
 
 ## [1.0.0] - 2025-08-13
 
