@@ -1,10 +1,11 @@
 package shell
 
 import (
-	"crypto/md5"
+	crypto_rand "crypto/rand"
+	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
-	"math/rand"
+	"math/big"
 )
 
 // Dark mode friendly colors (256-color ANSI codes)
@@ -40,17 +41,22 @@ func GenerateColoredPrompt(envName string, shellType ShellType) string {
 
 // GetDarkModeColor returns a random color suitable for dark terminals
 func GetDarkModeColor() string {
-	index := rand.Intn(len(darkModeColors))
-	return darkModeColors[index]
+	n, err := crypto_rand.Int(crypto_rand.Reader, big.NewInt(int64(len(darkModeColors))))
+	if err != nil {
+		// Fallback to first color on error
+		return darkModeColors[0]
+	}
+	return darkModeColors[n.Int64()]
 }
 
 // GetColorForEnvironment returns a consistent color for a given environment name
 func GetColorForEnvironment(envName string) string {
-	// Use MD5 hash to get a deterministic but pseudo-random index
-	hash := md5.Sum([]byte(envName))
+	// Use SHA256 hash to get a deterministic but pseudo-random index
+	hash := sha256.Sum256([]byte(envName))
 	// Use first 4 bytes of hash as seed
 	seed := binary.BigEndian.Uint32(hash[:4])
-	index := int(seed % uint32(len(darkModeColors)))
+	// Safe modulo operation to prevent overflow
+	index := seed % uint32(len(darkModeColors))
 	return darkModeColors[index]
 }
 

@@ -1,9 +1,10 @@
 package ports
 
 import (
+	crypto_rand "crypto/rand"
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"net"
 	"os"
 	"path/filepath"
@@ -95,7 +96,12 @@ func FindFreePort(minPort, maxPort int) int {
 	
 	// Try random ports in range
 	for i := 0; i < 1000; i++ {
-		port := minPort + rand.Intn(maxPort-minPort)
+		n, err := crypto_rand.Int(crypto_rand.Reader, big.NewInt(int64(maxPort-minPort)))
+		if err != nil {
+			// Fall through to sequential scan on error
+			break
+		}
+		port := minPort + int(n.Int64())
 		if IsPortAvailable(port) {
 			return port
 		}
@@ -116,6 +122,6 @@ func IsPortAvailable(port int) bool {
 	if err != nil {
 		return false
 	}
-	ln.Close()
+	_ = ln.Close()
 	return true
 }
