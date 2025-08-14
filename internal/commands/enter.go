@@ -45,12 +45,12 @@ func Enter(envName string) error {
 
 	// Create environment path
 	envPath := paths.EnvironmentPath(projectName, envName)
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 
 	// Create project path
 	projectPath := paths.ProjectPath(projectName)
-	os.MkdirAll(projectPath, 0755)
-	os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
+	_ = os.MkdirAll(projectPath, 0755)
+	_ = os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
 
 	// Create .denv symlinks in project directory
 	if err := createProjectSymlinks(cwd, envPath, projectPath, projectName, envName); err != nil {
@@ -139,7 +139,7 @@ func Enter(envName string) error {
 	
 	// Store overrides in runtime for persistence
 	runtime.Overrides = overrides
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Check for test mode
 	if os.Getenv("DENV_TEST_MODE") == "1" {
@@ -209,7 +209,7 @@ func cleanupSession(envPath string, sessionHandle *session.SessionHandle) {
 	delete(runtime.Sessions, sessionHandle.ID)
 	
 	// Save the updated runtime
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 	
 	// Remove the lock file
 	lockPath := filepath.Join(envPath, "sessions", sessionHandle.ID+".lock")

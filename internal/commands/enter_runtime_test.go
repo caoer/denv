@@ -34,8 +34,8 @@ func TestEnterRespectsExistingRuntimePorts(t *testing.T) {
 
 	// Change to project directory
 	oldCwd, _ := os.Getwd()
-	os.Chdir(projectDir)
-	defer os.Chdir(oldCwd)
+	_ = os.Chdir(projectDir)
+	defer func() { _ = os.Chdir(oldCwd) }()
 
 	// Set environment variables that use ports
 	os.Setenv("DATABASE_URL", "postgres://localhost:5432/db")
@@ -68,7 +68,7 @@ func TestEnterRespectsExistingRuntimePorts(t *testing.T) {
 	// Simulate another user/session entering the same environment
 	// Clear the session to simulate a new entry
 	runtime1.Sessions = make(map[string]environment.Session)
-	environment.SaveRuntime(envPath, runtime1)
+	_ = environment.SaveRuntime(envPath, runtime1)
 
 	// Second enter - should respect existing port mappings
 	err = Enter("test")
@@ -107,8 +107,8 @@ func TestEnterAddsNewPortsWithoutLosingExisting(t *testing.T) {
 
 	// Change to project directory
 	oldCwd, _ := os.Getwd()
-	os.Chdir(projectDir)
-	defer os.Chdir(oldCwd)
+	_ = os.Chdir(projectDir)
+	defer func() { _ = os.Chdir(oldCwd) }()
 
 	// First enter with initial ports
 	os.Setenv("API_PORT", "3000")
@@ -127,7 +127,7 @@ func TestEnterAddsNewPortsWithoutLosingExisting(t *testing.T) {
 
 	// Clear session for next entry
 	runtime1.Sessions = make(map[string]environment.Session)
-	environment.SaveRuntime(envPath, runtime1)
+	_ = environment.SaveRuntime(envPath, runtime1)
 
 	// Second enter with additional port
 	os.Setenv("DB_PORT", "5432")
@@ -172,8 +172,8 @@ func TestPortsJsonAndRuntimeJsonConsistency(t *testing.T) {
 
 	// Change to project directory
 	oldCwd, _ := os.Getwd()
-	os.Chdir(projectDir)
-	defer os.Chdir(oldCwd)
+	_ = os.Chdir(projectDir)
+	defer func() { _ = os.Chdir(oldCwd) }()
 
 	// Set environment variables
 	os.Setenv("PORT", "8080")
