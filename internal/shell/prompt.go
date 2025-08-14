@@ -56,6 +56,7 @@ func GetColorForEnvironment(envName string) string {
 	// Use first 4 bytes of hash as seed
 	seed := binary.BigEndian.Uint32(hash[:4])
 	// Safe modulo operation to prevent overflow
+	// #nosec G115 -- len(darkModeColors) is a small constant, no overflow risk
 	index := seed % uint32(len(darkModeColors))
 	return darkModeColors[index]
 }

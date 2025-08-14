@@ -51,6 +51,7 @@ func PortColor(port int) string {
 	hash := h.Sum32()
 	
 	// Map hash to color index (safe modulo operation)
+	// #nosec G115 -- len(portColors) is a small constant, no overflow risk
 	colorIndex := hash % uint32(len(portColors))
 	return portColors[colorIndex]
 }
