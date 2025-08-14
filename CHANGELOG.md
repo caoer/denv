@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolve remaining CI issues ([5c940c0](https://github.com/caoer/denv/commit/5c940c067e1b5b759698fe9ae7a254e0d8c5d586))
 - Final linting issue in symlinks_test.go ([e70d245](https://github.com/caoer/denv/commit/e70d245930f5a607c639656a58dcecbf4c9c15d0))
 
+### CI/CD
+
+- Remove Windows from CI workflow matrix ([3a50418](https://github.com/caoer/denv/commit/3a504184586e6f4fd5198c00ae8e0483b478aa4e))
+
 ### Miscellaneous
 
 - Update changelog [skip ci] ([eef2258](https://github.com/caoer/denv/commit/eef22586752ed03047256934fa35f0c197a7671c))
@@ -29,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([6b167ef](https://github.com/caoer/denv/commit/6b167efae17c8072df2ee4dcb672e7d3b96325d2))
 - Update changelog [skip ci] ([673726b](https://github.com/caoer/denv/commit/673726bf8744b815278a78b9fa3ac6709ccbad8d))
 - Update changelog [skip ci] ([3fb8fa2](https://github.com/caoer/denv/commit/3fb8fa215ea2c7e4996ab6d3605a0848f8cf232d))
+- Update changelog [skip ci] ([5639e55](https://github.com/caoer/denv/commit/5639e554e2291f30f21da501080c20e550a73403))
 
 ## [1.0.0] - 2025-08-13
 
