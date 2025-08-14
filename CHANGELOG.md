@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### CI/CD
 
 - Remove Windows from CI workflow matrix ([3a50418](https://github.com/caoer/denv/commit/3a504184586e6f4fd5198c00ae8e0483b478aa4e))
+- Configure gosec to not fail CI on security findings ([c8a9927](https://github.com/caoer/denv/commit/c8a9927c68769f19cf6a016308c05b33e4431e65))
 
 ### Miscellaneous
 
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([5c496b2](https://github.com/caoer/denv/commit/5c496b21aac1f062acbf5061a79c248daeef9038))
 - Update changelog [skip ci] ([7ee8ffc](https://github.com/caoer/denv/commit/7ee8ffcfe78937b16b954e88c71dcdb8a499d707))
 - Update changelog [skip ci] ([dbb52ce](https://github.com/caoer/denv/commit/dbb52ce71edab78f1be8ec4bc6d91bdbd21e6ed1))
+- Update changelog [skip ci] ([5665f04](https://github.com/caoer/denv/commit/5665f0452583d32b35a5427eaf812bec2a590fc9))
 
 ## [1.0.0] - 2025-08-13
 
