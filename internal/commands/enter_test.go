@@ -24,12 +24,12 @@ func TestEnterWithDifferentShells(t *testing.T) {
 			// Setup
 			tmpDir := t.TempDir()
 			tmpProject := filepath.Join(t.TempDir(), "shelltest")
-			os.MkdirAll(tmpProject, 0755)
+			_ = os.MkdirAll(tmpProject, 0755)
 
 			testutil.RunCmd(t, tmpProject, "git", "init")
 			testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/shelltest.git")
 
-			os.Chdir(tmpProject)
+			_ = os.Chdir(tmpProject)
 			os.Setenv("DENV_HOME", tmpDir)
 			os.Setenv("DENV_TEST_MODE", "1")
 			os.Setenv("SHELL", tt.shell)
@@ -59,7 +59,7 @@ func TestEnterPreventNestedEnvironments(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/nestedtest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
 	

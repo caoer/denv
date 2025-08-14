@@ -22,7 +22,7 @@ func TestExportCommand(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/exporttest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	// Create an environment with some state
@@ -37,7 +37,7 @@ func TestExportCommand(t *testing.T) {
 			5432: 35432,
 		},
 	}
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Test: Export should output environment variables
 	var output bytes.Buffer
@@ -60,7 +60,7 @@ func TestExportForDirenv(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/direnvtest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	// Create environment
@@ -74,7 +74,7 @@ func TestExportForDirenv(t *testing.T) {
 			3000: 33000,
 		},
 	}
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Test: Export without environment name should use default
 	var output bytes.Buffer

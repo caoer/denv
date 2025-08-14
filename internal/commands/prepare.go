@@ -105,7 +105,7 @@ func PrepareEnv(envName string) error {
 	}
 
 	// Save runtime
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Prepare overrides
 	currentEnv := os.Environ()

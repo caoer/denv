@@ -15,7 +15,7 @@ func TestEnterCommand_NoPortPreallocation(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "noprealloc")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/noprealloc.git")
@@ -73,7 +73,7 @@ func TestEnterCommand_AllocatesPortsFromURLs(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "urlports")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/urlports.git")
