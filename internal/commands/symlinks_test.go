@@ -14,7 +14,7 @@ func TestCreateSymlinks(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "symlinktest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/symlinktest.git")
@@ -55,7 +55,7 @@ func TestUpdateSymlinksOnEnvironmentChange(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "symlinkswitchtest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/symlinkswitchtest.git")
