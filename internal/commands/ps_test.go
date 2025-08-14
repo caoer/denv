@@ -22,7 +22,7 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	// Create an environment with various types of overrides
@@ -135,7 +135,7 @@ func TestPsCommand_PortMappingSummaryShowsVariableNames(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest2.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	// Create an environment with port mappings
@@ -220,7 +220,7 @@ func TestPsCommand_ShowsShortenedPaths(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest3.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	// Create an environment

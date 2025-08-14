@@ -48,12 +48,12 @@ func PrepareEnv(envName string) error {
 
 	// Create environment path
 	envPath := paths.EnvironmentPath(projectName, envName)
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 
 	// Create project path
 	projectPath := paths.ProjectPath(projectName)
-	os.MkdirAll(projectPath, 0755)
-	os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
+	_ = os.MkdirAll(projectPath, 0755)
+	_ = os.MkdirAll(filepath.Join(projectPath, "hooks"), 0755)
 
 	// Create .denv symlinks in project directory
 	_ = createProjectSymlinks(cwd, envPath, projectPath, projectName, envName)
