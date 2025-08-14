@@ -47,7 +47,7 @@ var portColors = []string{
 func PortColor(port int) string {
 	// Use FNV-1a hash for consistent distribution
 	h := fnv.New32a()
-	_ = h.Write([]byte(fmt.Sprintf("%d", port)))
+	_, _ = h.Write([]byte(fmt.Sprintf("%d", port)))
 	hash := h.Sum32()
 	
 	// Map hash to color index (safe modulo operation)
