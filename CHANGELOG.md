@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Final linting issues in test files ([7dac90c](https://github.com/caoer/denv/commit/7dac90c3a9dc5772d6aea7f284889ad8f16987cf))
 - Resolve final test issues ([ae545e7](https://github.com/caoer/denv/commit/ae545e7e4a4e582b556fba7395f12fdf4ba441c3))
 - Resolve remaining CI issues ([5c940c0](https://github.com/caoer/denv/commit/5c940c067e1b5b759698fe9ae7a254e0d8c5d586))
+- Final linting issue in symlinks_test.go ([e70d245](https://github.com/caoer/denv/commit/e70d245930f5a607c639656a58dcecbf4c9c15d0))
 
 ### Miscellaneous
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([bc41966](https://github.com/caoer/denv/commit/bc4196699de21ebae31408135abc05550033c3ba))
 - Update changelog [skip ci] ([6b167ef](https://github.com/caoer/denv/commit/6b167efae17c8072df2ee4dcb672e7d3b96325d2))
 - Update changelog [skip ci] ([673726b](https://github.com/caoer/denv/commit/673726bf8744b815278a78b9fa3ac6709ccbad8d))
+- Update changelog [skip ci] ([3fb8fa2](https://github.com/caoer/denv/commit/3fb8fa215ea2c7e4996ab6d3605a0848f8cf232d))
 
 ## [1.0.0] - 2025-08-13
 
