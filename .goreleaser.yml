@@ -118,7 +118,7 @@ release:
 
     #### Homebrew (macOS/Linux)
     ```bash
-    brew tap yourusername/denv
+    brew tap caoer/denv
     brew install denv
     ```
 
@@ -127,7 +127,7 @@ release:
 
     #### Install Script
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/yourusername/denv/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/caoer/denv/main/install.sh | bash
     ```
 
   footer: |

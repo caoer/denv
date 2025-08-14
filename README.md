@@ -58,10 +58,10 @@ $ denv enter
 
 ```bash
 # Install Go binary
-go install github.com/youruser/denv/cmd/denv@latest
+go install github.com/caoer/denv/cmd/denv@latest
 
 # Or build from source
-git clone https://github.com/youruser/denv.git
+git clone https://github.com/caoer/denv.git
 cd denv
 make build
 sudo mv ./denv /usr/local/bin/
@@ -73,7 +73,7 @@ For the best experience with aliases and instant switching:
 
 ```bash
 # Clone the repository
-git clone https://github.com/youruser/denv.git
+git clone https://github.com/caoer/denv.git
 cd denv
 
 # Run the installer
@@ -464,7 +464,7 @@ chmod -R 755 ~/.denv
 
 ```bash
 # Clone repository
-git clone https://github.com/youruser/denv.git
+git clone https://github.com/caoer/denv.git
 cd denv
 
 # Run tests (TDD approach)
@@ -547,7 +547,7 @@ Built with ❤️ using:
 
 ```bash
 # Get started in 10 seconds
-go install github.com/youruser/denv/cmd/denv@latest
+go install github.com/caoer/denv/cmd/denv@latest
 denv enter
 ```
 

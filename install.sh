@@ -3,9 +3,9 @@
 set -e
 
 # denv installer script
-# Usage: curl -fsSL https://raw.githubusercontent.com/yourusername/denv/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/caoer/denv/main/install.sh | bash
 
-REPO="yourusername/denv"
+REPO="caoer/denv"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 DENV_HOME="${DENV_HOME:-$HOME/.denv}"
 

@@ -5,7 +5,7 @@
 ### Step 0.1: Initialize Go Project
 ```bash
 mkdir denv && cd denv
-go mod init github.com/yourusername/denv
+go mod init github.com/caoer/denv
 ```
 
 ### Step 0.2: Setup Test Framework

@@ -6,7 +6,7 @@ Follow these steps to enable the CI/CD pipeline for your denv repository:
 
 ## 1. Update Repository References
 
-Replace `yourusername` with your GitHub username in these files:
+Replace `caoer` with your GitHub username in these files:
 - `.goreleaser.yml`
 - `install.sh`
 - `docs/badges.md`
