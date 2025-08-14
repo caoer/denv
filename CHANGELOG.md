@@ -11,10 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Resolve CI/CD issues - linting errors and test failures ([3b75147](https://github.com/caoer/denv/commit/3b7514703a9eaca6940f32d3efee41c1de1d4aa8))
 - Resolve remaining CI/CD issues ([45e1223](https://github.com/caoer/denv/commit/45e1223128c421cf65f071d475692e6ddbed16a3))
+- Resolve remaining test file linting issues ([57153cb](https://github.com/caoer/denv/commit/57153cb5a61b80d9d63ddeb51fd134056e39c3aa))
 
 ### Miscellaneous
 
 - Update changelog [skip ci] ([eef2258](https://github.com/caoer/denv/commit/eef22586752ed03047256934fa35f0c197a7671c))
+- Update changelog [skip ci] ([61d41ac](https://github.com/caoer/denv/commit/61d41ace2e55a02623f1100be874a441cbbe03c4))
 
 ## [1.0.0] - 2025-08-13
 
