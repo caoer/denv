@@ -17,7 +17,7 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "pstest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest.git")
@@ -27,7 +27,7 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 
 	// Create an environment with various types of overrides
 	envPath := paths.EnvironmentPath("pstest", "test")
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 	
 	runtime := &environment.Runtime{
 		Project:     "pstest",
@@ -130,7 +130,7 @@ func TestPsCommand_PortMappingSummaryShowsVariableNames(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "pstest2")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest2.git")
@@ -140,7 +140,7 @@ func TestPsCommand_PortMappingSummaryShowsVariableNames(t *testing.T) {
 
 	// Create an environment with port mappings
 	envPath := paths.EnvironmentPath("pstest2", "test")
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 	
 	runtime := &environment.Runtime{
 		Project:     "pstest2",
@@ -215,7 +215,7 @@ func TestPsCommand_ShowsShortenedPaths(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "pstest3")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/pstest3.git")
@@ -225,7 +225,7 @@ func TestPsCommand_ShowsShortenedPaths(t *testing.T) {
 
 	// Create an environment
 	envPath := paths.EnvironmentPath("pstest3", "test")
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 	
 	runtime := &environment.Runtime{
 		Project:     "pstest3",

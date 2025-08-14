@@ -28,6 +28,8 @@ func TestDetectGitWorktree(t *testing.T) {
 
 	testutil.RunCmd(t, "", "mkdir", "-p", mainDir)
 	testutil.RunCmd(t, mainDir, "git", "init")
+	testutil.RunCmd(t, mainDir, "git", "config", "user.email", "test@example.com")
+	testutil.RunCmd(t, mainDir, "git", "config", "user.name", "Test User")
 	testutil.RunCmd(t, mainDir, "git", "remote", "add", "origin", "https://github.com/user/myproject.git")
 	testutil.RunCmd(t, mainDir, "git", "commit", "--allow-empty", "-m", "init")
 	testutil.RunCmd(t, mainDir, "git", "worktree", "add", worktreeDir)

@@ -19,7 +19,7 @@ func TestCreateSymlinks(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/symlinktest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
 
@@ -60,7 +60,7 @@ func TestUpdateSymlinksOnEnvironmentChange(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/symlinkswitchtest.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 	os.Setenv("DENV_HOME", tmpDir)
 	os.Setenv("DENV_TEST_MODE", "1")
 
