@@ -200,7 +200,7 @@ func CleanupSession(sessionID string) error {
 				envPath := filepath.Dir(path)
 				if runtime, err := environment.LoadRuntime(envPath); err == nil {
 					delete(runtime.Sessions, sessionID)
-					environment.SaveRuntime(envPath, runtime)
+					_ = environment.SaveRuntime(envPath, runtime)
 				}
 			}
 		}

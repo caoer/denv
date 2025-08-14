@@ -20,7 +20,7 @@ func TestProjectShow(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/projectshow.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 
 	// Test: Show current project name
 	var output bytes.Buffer
@@ -39,7 +39,7 @@ func TestProjectRename(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/projectrename.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 
 	// Test: Rename project
 	var output bytes.Buffer
@@ -78,7 +78,7 @@ func TestProjectUnset(t *testing.T) {
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/projectunset.git")
 
-	os.Chdir(tmpProject)
+	_ = os.Chdir(tmpProject)
 
 	// First set a custom name using current working directory (not tmpProject)
 	configPath := filepath.Join(paths.DenvHome(), "config.yaml")

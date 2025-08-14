@@ -94,8 +94,7 @@ jobs:
     - name: Test binary
       if: matrix.arch == 'amd64'
       run: |
-        ./denv${{ runner.os == 'Windows' && '.exe' || '' }} --version
-        ./denv${{ runner.os == 'Windows' && '.exe' || '' }} --help
+        ./denv${{ runner.os == 'Windows' && '.exe' || '' }} help
 
   security:
     name: Security Scan

@@ -17,7 +17,7 @@ func TestExportCommand(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "exporttest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/exporttest.git")
@@ -27,7 +27,7 @@ func TestExportCommand(t *testing.T) {
 
 	// Create an environment with some state
 	envPath := paths.EnvironmentPath("exporttest", "test")
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 	
 	runtime := &environment.Runtime{
 		Project:     "exporttest",
@@ -55,7 +55,7 @@ func TestExportForDirenv(t *testing.T) {
 	// Setup similar to above
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "direnvtest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/direnvtest.git")
@@ -65,7 +65,7 @@ func TestExportForDirenv(t *testing.T) {
 
 	// Create environment
 	envPath := paths.EnvironmentPath("direnvtest", "default")
-	os.MkdirAll(envPath, 0755)
+	_ = os.MkdirAll(envPath, 0755)
 	
 	runtime := &environment.Runtime{
 		Project:     "direnvtest",

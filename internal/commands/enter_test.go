@@ -54,7 +54,7 @@ func TestEnterPreventNestedEnvironments(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "nestedtest")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/nestedtest.git")

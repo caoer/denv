@@ -76,7 +76,7 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 		},
 		Sessions: map[string]environment.Session{},
 	}
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Test: showSpecificEnvironment should display environment variable names
 	oldStdout := os.Stdout
@@ -169,7 +169,7 @@ func TestPsCommand_PortMappingSummaryShowsVariableNames(t *testing.T) {
 		},
 		Sessions: map[string]environment.Session{},
 	}
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Test: Port mapping summary should show variable names
 	oldStdout := os.Stdout
@@ -234,7 +234,7 @@ func TestPsCommand_ShowsShortenedPaths(t *testing.T) {
 		Overrides:   map[string]environment.Override{},
 		Sessions:    map[string]environment.Session{},
 	}
-	environment.SaveRuntime(envPath, runtime)
+	_ = environment.SaveRuntime(envPath, runtime)
 
 	// Test: showSpecificEnvironment should display shortened paths
 	oldStdout := os.Stdout
