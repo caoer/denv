@@ -14,7 +14,7 @@ func TestRm_BasicFunctionality(t *testing.T) {
 	// Setup test environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	// Initialize git repo
 	testutil.RunCmd(t, tmpProject, "git", "init")
@@ -48,7 +48,7 @@ func TestRm_NonExistentEnvironment(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
@@ -66,7 +66,7 @@ func TestRm_WithActiveSessions(t *testing.T) {
 	// Setup test environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
@@ -102,7 +102,7 @@ func TestRm_AllFlag_RemovesOnlyInactiveEnvironments(t *testing.T) {
 	// Setup test environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
@@ -147,7 +147,7 @@ func TestRm_AllFlag_NoEnvironments(t *testing.T) {
 	// Setup empty environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
@@ -164,7 +164,7 @@ func TestRm_AllFlag_AllEnvironmentsActive(t *testing.T) {
 	// Setup test environment
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "testproject")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/testproject.git")
