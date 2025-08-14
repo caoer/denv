@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Final linting issue in symlinks_test.go ([e70d245](https://github.com/caoer/denv/commit/e70d245930f5a607c639656a58dcecbf4c9c15d0))
 - Resolve gosec security issues ([c009a01](https://github.com/caoer/denv/commit/c009a011da0293ffbcc30a73e56100d15eb3aff9))
 - Correct hash.Write return value handling ([5309cb2](https://github.com/caoer/denv/commit/5309cb20c60c59dcaff0efa6a8493ffa238108fd))
+- Suppress false positive gosec G115 warnings ([3aee9ca](https://github.com/caoer/denv/commit/3aee9caaf64aad737dde2418ef05375fe6e6f825))
 
 ### CI/CD
 
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([aa1b74e](https://github.com/caoer/denv/commit/aa1b74e4f18f40fe8f4a9ba53dcc7c6ccf9d575d))
 - Update changelog [skip ci] ([5c496b2](https://github.com/caoer/denv/commit/5c496b21aac1f062acbf5061a79c248daeef9038))
 - Update changelog [skip ci] ([7ee8ffc](https://github.com/caoer/denv/commit/7ee8ffcfe78937b16b954e88c71dcdb8a499d707))
+- Update changelog [skip ci] ([dbb52ce](https://github.com/caoer/denv/commit/dbb52ce71edab78f1be8ec4bc6d91bdbd21e6ed1))
 
 ## [1.0.0] - 2025-08-13
 
