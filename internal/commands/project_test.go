@@ -15,7 +15,7 @@ import (
 func TestProjectShow(t *testing.T) {
 	// Setup
 	tmpProject := filepath.Join(t.TempDir(), "projectshow")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
 	testutil.RunCmd(t, tmpProject, "git", "remote", "add", "origin", "https://github.com/user/projectshow.git")
@@ -33,7 +33,7 @@ func TestProjectRename(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "projectrename")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
@@ -72,7 +72,7 @@ func TestProjectUnset(t *testing.T) {
 	// Setup
 	tmpDir := t.TempDir()
 	tmpProject := filepath.Join(t.TempDir(), "projectunset")
-	os.MkdirAll(tmpProject, 0755)
+	_ = os.MkdirAll(tmpProject, 0755)
 	os.Setenv("DENV_HOME", tmpDir)
 
 	testutil.RunCmd(t, tmpProject, "git", "init")
