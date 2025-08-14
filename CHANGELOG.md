@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolve Windows build and final linting issues ([f26e461](https://github.com/caoer/denv/commit/f26e4614291be4d97f45b10995ae7ca846f755bc))
 - Final linting issues in test files ([7dac90c](https://github.com/caoer/denv/commit/7dac90c3a9dc5772d6aea7f284889ad8f16987cf))
 - Resolve final test issues ([ae545e7](https://github.com/caoer/denv/commit/ae545e7e4a4e582b556fba7395f12fdf4ba441c3))
+- Resolve remaining CI issues ([5c940c0](https://github.com/caoer/denv/commit/5c940c067e1b5b759698fe9ae7a254e0d8c5d586))
 
 ### Miscellaneous
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([b77f20c](https://github.com/caoer/denv/commit/b77f20c0a28bbd19183f54509f027a878f4cc362))
 - Update changelog [skip ci] ([bc41966](https://github.com/caoer/denv/commit/bc4196699de21ebae31408135abc05550033c3ba))
 - Update changelog [skip ci] ([6b167ef](https://github.com/caoer/denv/commit/6b167efae17c8072df2ee4dcb672e7d3b96325d2))
+- Update changelog [skip ci] ([673726b](https://github.com/caoer/denv/commit/673726bf8744b815278a78b9fa3ac6709ccbad8d))
 
 ## [1.0.0] - 2025-08-13
 
