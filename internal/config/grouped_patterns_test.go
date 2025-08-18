@@ -59,7 +59,7 @@ func TestAllSystemPathsCovered(t *testing.T) {
 		"NIX_PATH", "NIX_USER_PROFILE_DIR",
 		// Applications
 		"SOLANA_HOME", "KITTY_INSTALLATION_DIR", "MINIO_HOME",
-		"TMUX_PLUGIN_MANAGER_PATH"
+		"TMUX_PLUGIN_MANAGER_PATH",
 		// Shell/tools
 		"ZSH_CACHE_DIR", "DOT_PATH", "FORGIT_INSTALL_DIR", "__MISE_ORIG_PATH",
 	}

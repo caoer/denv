@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/caoer/denv/internal/color"
+	"github.com/caoer/denv/internal/ui"
 	"github.com/caoer/denv/internal/config"
 	"github.com/caoer/denv/internal/environment"
 	"github.com/caoer/denv/internal/override"
@@ -388,97 +388,70 @@ func printEnterMessage(envName, projectName string, ports map[int]int, overrides
 	if len(overrides) > 0 {
 		fmt.Println("\n🔧 Environment Variable Modifications:")
 		
-		// Group by rule type for better organization
-		portVars := []string{}
-		urlRewrites := []string{}
-		isolatedPaths := []string{}
+		// Collect data for UI cards
+		var portMappings []ui.PortMapping
+		var urlRewriteList []ui.URLRewrite
+		var pathList []ui.IsolatedPath
 		
-		// Sort variable names for consistent display
-		var varNames []string
-		for key := range overrides {
-			varNames = append(varNames, key)
-		}
-		sort.Strings(varNames)
-		
-		for _, key := range varNames {
-			override := overrides[key]
-			
-			// Format the entry showing: VAR_NAME: original → new
-			var entry string
+		for key, override := range overrides {
 			switch override.Rule {
 			case "random_port":
-				entry = fmt.Sprintf("   %s: %s → %s", key, override.Original, override.Current)
-				portVars = append(portVars, entry)
+				origPort, _ := strconv.Atoi(override.Original)
+				currPort, _ := strconv.Atoi(override.Current)
+				portMappings = append(portMappings, ui.PortMapping{
+					Name:     key,
+					Original: origPort,
+					Mapped:   currPort,
+				})
+				
 			case "rewrite_ports":
 				if override.Original != override.Current {
-					// Show abbreviated URLs for readability
+					// Colorize ports in URLs
 					orig := override.Original
 					curr := override.Current
-					if len(orig) > 50 {
-						orig = orig[:47] + "..."
-					}
-					if len(curr) > 50 {
-						curr = curr[:47] + "..."
-					}
 					
-					// Colorize ports in URLs
 					for origPort, newPort := range ports {
-						origPortStr := fmt.Sprintf(":%d", origPort)
-						newPortStr := fmt.Sprintf(":%d", newPort)
-						if strings.Contains(override.Original, origPortStr) {
-							orig = color.ColorizePortInURL(orig, origPort)
-						}
-						if strings.Contains(override.Current, newPortStr) {
-							curr = color.ColorizePortInURL(curr, newPort)
-						}
+						orig = ui.ColorizePortInURL(orig, origPort)
+						curr = ui.ColorizePortInURL(curr, newPort)
 					}
 					
-					entry = fmt.Sprintf("   %s:\n      %s\n      → %s", key, orig, curr)
-					urlRewrites = append(urlRewrites, entry)
+					urlRewriteList = append(urlRewriteList, ui.URLRewrite{
+						Name:     key,
+						Original: orig,
+						Current:  curr,
+					})
 				}
+				
 			case "isolate":
-				entry = fmt.Sprintf("   %s:\n      %s\n      → %s", key, override.Original, override.Current)
-				isolatedPaths = append(isolatedPaths, entry)
+				pathList = append(pathList, ui.IsolatedPath{
+					Name:     key,
+					Original: override.Original,
+					Current:  override.Current,
+				})
 			}
 		}
 		
-		// Display each category
-		if len(portVars) > 0 {
-			// Convert to PortMapping format for the new display
-			var portMappings []color.PortMapping
-			for key, override := range overrides {
-				if override.Rule == "random_port" {
-					origPort, _ := strconv.Atoi(override.Original)
-					currPort, _ := strconv.Atoi(override.Current)
-					portMappings = append(portMappings, color.PortMapping{
-						Name:     key,
-						Original: origPort,
-						Mapped:   currPort,
-					})
-				}
-			}
-			
+		// Display using the new UI cards
+		if len(portMappings) > 0 {
 			// Sort port mappings by name for consistent display
 			sort.Slice(portMappings, func(i, j int) bool {
 				return portMappings[i].Name < portMappings[j].Name
 			})
-			
-			// Use the new card display format
-			fmt.Print(color.FormatPortCard(portMappings))
+			fmt.Print(ui.RenderPortCard(portMappings))
 		}
 		
-		if len(urlRewrites) > 0 {
-			fmt.Println("\n   [URL/Endpoint Rewrites]")
-			for _, entry := range urlRewrites {
-				fmt.Println(entry)
+		if len(urlRewriteList) > 0 {
+			if len(portMappings) > 0 {
+				fmt.Println()
 			}
+			fmt.Print(ui.RenderURLCard(urlRewriteList))
 		}
 		
-		if len(isolatedPaths) > 0 {
-			fmt.Println("\n   [Isolated Paths]")
-			for _, entry := range isolatedPaths {
-				fmt.Println(entry)
+		if len(pathList) > 0 {
+			if len(portMappings) > 0 || len(urlRewriteList) > 0 {
+				fmt.Println()
 			}
+			fmt.Print(ui.RenderIsolatedPathCard(pathList))
 		}
 	}
 	

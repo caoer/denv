@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"syscall"
 
 	"github.com/caoer/denv/internal/environment"
 	"github.com/caoer/denv/internal/paths"
+	"github.com/caoer/denv/internal/ui"
 )
 
 // EnvironmentInfo represents basic environment information
@@ -82,7 +82,7 @@ func List() error {
 	}
 
 	// Group environments by project
-	projectEnvs := make(map[string][]string)
+	projectEnvs := make(map[string][]ui.EnvInfo)
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
@@ -93,11 +93,38 @@ func List() error {
 		parts := strings.SplitN(name, "-", 2)
 		if len(parts) == 2 {
 			project := parts[0]
-			env := parts[1]
-			projectEnvs[project] = append(projectEnvs[project], env)
+			envName := parts[1]
+			
+			// Load runtime to get session and port info
+			envPath := filepath.Join(denvHome, name)
+			runtime, _ := environment.LoadRuntime(envPath)
+			
+			sessionCount := 0
+			portCount := 0
+			active := false
+			
+			if runtime != nil {
+				// Count active sessions
+				for _, session := range runtime.Sessions {
+					if sessionExists(session.PID) {
+						sessionCount++
+						active = true
+					}
+				}
+				portCount = len(runtime.Ports)
+			}
+			
+			envInfo := ui.EnvInfo{
+				Name:     envName,
+				Active:   active,
+				Sessions: sessionCount,
+				Ports:    portCount,
+			}
+			
+			projectEnvs[project] = append(projectEnvs[project], envInfo)
 		} else if name != "" && !strings.HasPrefix(name, ".") {
 			// Standalone project directory
-			projectEnvs[name] = []string{}
+			projectEnvs[name] = []ui.EnvInfo{}
 		}
 	}
 
@@ -106,55 +133,8 @@ func List() error {
 		return nil
 	}
 
-	fmt.Println("\n🌍 All denv Environments:")
-	fmt.Println(strings.Repeat("─", 50))
-
-	// Sort projects for consistent display
-	var projects []string
-	for project := range projectEnvs {
-		projects = append(projects, project)
-	}
-	sort.Strings(projects)
-
-	for _, project := range projects {
-		envs := projectEnvs[project]
-		fmt.Printf("\n📦 %s\n", project)
-		
-		if len(envs) == 0 {
-			fmt.Println("   (shared project directory only)")
-			continue
-		}
-		
-		// Sort environments
-		sort.Strings(envs)
-		for _, env := range envs {
-			envPath := filepath.Join(denvHome, project+"-"+env)
-			runtime, _ := environment.LoadRuntime(envPath)
-			
-			status := "inactive"
-			sessionCount := 0
-			if runtime != nil && len(runtime.Sessions) > 0 {
-				// Count active sessions
-				for _, session := range runtime.Sessions {
-					if sessionExists(session.PID) {
-						sessionCount++
-					}
-				}
-				if sessionCount > 0 {
-					status = fmt.Sprintf("%d active session(s)", sessionCount)
-				}
-			}
-			
-			portInfo := ""
-			if runtime != nil && len(runtime.Ports) > 0 {
-				portInfo = fmt.Sprintf(" [%d ports mapped]", len(runtime.Ports))
-			}
-			
-			fmt.Printf("   • %s: %s%s\n", env, status, portInfo)
-		}
-	}
-	
-	fmt.Println("\n" + strings.Repeat("─", 50))
+	// Use the new UI renderer
+	fmt.Println(ui.RenderEnvironmentList("All denv Environments", projectEnvs))
 	return nil
 }
 

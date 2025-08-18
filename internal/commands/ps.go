@@ -3,14 +3,13 @@ package commands
 import (
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 
-	"github.com/caoer/denv/internal/color"
 	"github.com/caoer/denv/internal/environment"
 	"github.com/caoer/denv/internal/paths"
 	"github.com/caoer/denv/internal/project"
+	"github.com/caoer/denv/internal/ui"
 )
 
 // Ps shows the current environment status and modifications or a specific environment if provided
@@ -144,123 +143,66 @@ func showEnvironmentDetails(runtime *environment.Runtime) {
 		fmt.Println("\n🔧 Environment Variable Modifications:")
 		
 		// Categorize overrides
-		portVars := []struct {
-			name     string
-			override environment.Override
-			port     int
-		}{}
-		urlRewrites := []struct {
-			name     string
-			override environment.Override
-		}{}
-		isolatedPaths := []struct {
-			name     string
-			override environment.Override
-		}{}
+		var portMappings []ui.PortMapping
+		var urlRewrites []ui.URLRewrite
+		var isolatedPaths []ui.IsolatedPath
 		
-		// Sort variable names for consistent display
-		var varNames []string
-		for key := range runtime.Overrides {
-			varNames = append(varNames, key)
-		}
-		sort.Strings(varNames)
-		
-		// Categorize each override and extract port info where applicable
-		for _, key := range varNames {
-			override := runtime.Overrides[key]
-			
+		// Process each override
+		for key, override := range runtime.Overrides {
 			switch override.Rule {
 			case "random_port":
-				// Extract port number from the value
-				port := 0
-				if override.Original != "" {
-					port, _ = strconv.Atoi(override.Original)
-				}
-				portVars = append(portVars, struct {
-					name     string
-					override environment.Override
-					port     int
-				}{key, override, port})
-				
-			case "rewrite_ports":
-				if override.Original != override.Current {
-					urlRewrites = append(urlRewrites, struct {
-						name     string
-						override environment.Override
-					}{key, override})
-				}
-				
-			case "isolate":
-				isolatedPaths = append(isolatedPaths, struct {
-					name     string
-						override environment.Override
-				}{key, override})
-			}
-		}
-		
-		// Display port variables with improved visual design
-		if len(portVars) > 0 {
-			// Convert to PortMapping format for the new display
-			var portMappings []color.PortMapping
-			for _, pv := range portVars {
-				origPort, _ := strconv.Atoi(pv.override.Original)
-				currPort, _ := strconv.Atoi(pv.override.Current)
-				portMappings = append(portMappings, color.PortMapping{
-					Name:     pv.name,
+				origPort, _ := strconv.Atoi(override.Original)
+				currPort, _ := strconv.Atoi(override.Current)
+				portMappings = append(portMappings, ui.PortMapping{
+					Name:     key,
 					Original: origPort,
 					Mapped:   currPort,
 				})
-			}
-			
-			// Use the new card display format
-			fmt.Print(color.FormatPortCard(portMappings))
-		}
-		
-		// Display URL rewrites with new card format
-		if len(urlRewrites) > 0 {
-			var urlRewriteList []color.URLRewrite
-			for _, ur := range urlRewrites {
-				// Colorize ports in URLs
-				orig := ur.override.Original
-				curr := ur.override.Current
 				
-				for origPort, newPort := range runtime.Ports {
-					origPortStr := fmt.Sprintf(":%d", origPort)
-					newPortStr := fmt.Sprintf(":%d", newPort)
-					if strings.Contains(orig, origPortStr) {
-						orig = color.ColorizePortInURL(orig, origPort)
+			case "rewrite_ports":
+				if override.Original != override.Current {
+					// Colorize ports in URLs
+					orig := override.Original
+					curr := override.Current
+					
+					for origPort, newPort := range runtime.Ports {
+						orig = ui.ColorizePortInURL(orig, origPort)
+						curr = ui.ColorizePortInURL(curr, newPort)
 					}
-					if strings.Contains(curr, newPortStr) {
-						curr = color.ColorizePortInURL(curr, newPort)
-					}
+					
+					urlRewrites = append(urlRewrites, ui.URLRewrite{
+						Name:     key,
+						Original: orig,
+						Current:  curr,
+					})
 				}
 				
-				urlRewriteList = append(urlRewriteList, color.URLRewrite{
-					Name:     ur.name,
-					Original: orig,
-					Current:  curr,
-				})
-			}
-			fmt.Print("\n")
-			fmt.Print(color.FormatURLCard(urlRewriteList))
-		}
-		
-		// Display isolated paths with new card format
-		if len(isolatedPaths) > 0 {
-			var pathList []color.IsolatedPath
-			for _, ip := range isolatedPaths {
+			case "isolate":
 				// Apply path shortening to isolated paths
-				origShort := paths.ShortenPath(ip.override.Original, 0)
-				currShort := paths.ShortenPath(ip.override.Current, 0)
+				origShort := paths.ShortenPath(override.Original, 0)
+				currShort := paths.ShortenPath(override.Current, 0)
 				
-				pathList = append(pathList, color.IsolatedPath{
-					Name:     ip.name,
+				isolatedPaths = append(isolatedPaths, ui.IsolatedPath{
+					Name:     key,
 					Original: origShort,
 					Current:  currShort,
 				})
 			}
+		}
+		
+		// Display using the new UI cards
+		if len(portMappings) > 0 {
+			fmt.Print(ui.RenderPortCard(portMappings))
+		}
+		
+		if len(urlRewrites) > 0 {
 			fmt.Print("\n")
-			fmt.Print(color.FormatIsolatedPathCard(pathList))
+			fmt.Print(ui.RenderURLCard(urlRewrites))
+		}
+		
+		if len(isolatedPaths) > 0 {
+			fmt.Print("\n")
+			fmt.Print(ui.RenderIsolatedPathCard(isolatedPaths))
 		}
 	}
 }

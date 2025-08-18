@@ -94,10 +94,10 @@ func TestPsCommand_ShowsEnvironmentVariableNames(t *testing.T) {
 
 	assert.NoError(t, err)
 	
-	// Check that port variable names are shown
-	assert.Contains(t, output, "PORT:", "Should show PORT variable name")
-	assert.Contains(t, output, "DB_PORT:", "Should show DB_PORT variable name")
-	assert.Contains(t, output, "API_PORT:", "Should show API_PORT variable name")
+	// Check that port variable names are shown (new format has spaces)
+	assert.Contains(t, output, "PORT", "Should show PORT variable name")
+	assert.Contains(t, output, "DB_PORT", "Should show DB_PORT variable name")
+	assert.Contains(t, output, "API_PORT", "Should show API_PORT variable name")
 	// Check for port numbers (color codes make exact match difficult)
 	assert.Contains(t, output, "3000", "Should show original port 3000")
 	assert.Contains(t, output, "33000", "Should show mapped port 33000")

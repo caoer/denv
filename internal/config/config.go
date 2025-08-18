@@ -111,7 +111,7 @@ func defaultPatterns() []PatternRule {
 	
 	// Shell and tool configurations
 	patterns = append(patterns, PatternRule{
-		Pattern: "ZSH_CACHE_DIR | DOT_PATH | FORGIT_INSTALL_DIR | __MISE_ORIG_PATH | DIRENV_DIR",
+		Pattern: "ZSH_CACHE_DIR | DOT_PATH | FORGIT_INSTALL_DIR | __MISE_ORIG_PATH | DIRENV_DIR | DIRENV_CONFIG | RIPGREP_CONFIG_PATH | XDG_CONFIG_HOME",
 		Rule: Rule{
 			Action: "keep",
 		},
@@ -125,6 +125,7 @@ func defaultPatterns() []PatternRule {
 			Range:  []int{30000, 39999},
 		},
 	})
+	// Isolate paths - but exclude specific ones that should be kept
 	patterns = append(patterns, PatternRule{
 		Pattern: "*_ROOT | *_DIR | *_PATH | *_HOME",
 		Rule: Rule{
