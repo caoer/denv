@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([9766b46](https://github.com/caoer/denv/commit/9766b468e523aec18b755cf5dc7fd24a68ccd8a3))
 - Update changelog [skip ci] ([8cdbe85](https://github.com/caoer/denv/commit/8cdbe85fc405ff8249e8297aa6c3655cbf81aa11))
 - Update changelog [skip ci] ([7ac0d1d](https://github.com/caoer/denv/commit/7ac0d1da23c9b9a4083611c08d105b2b9b977909))
+- Update changelog [skip ci] ([6a710af](https://github.com/caoer/denv/commit/6a710af0a6f3b2a55a6b349d77f131903a835a12))
 
 ## [1.0.0] - 2025-08-13
 
