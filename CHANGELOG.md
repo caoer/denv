@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplify gosec security scan step ([b0b5bcb](https://github.com/caoer/denv/commit/b0b5bcb3a9a8747bd0d7df59d331012181caa952))
 - Update Go version to 1.24 to match go.mod ([8435216](https://github.com/caoer/denv/commit/843521677d8f3b99e9a7b660203c835178e0cd41))
 
+### Features
+
+- Add default ignored directories and config update command ([e9f43fc](https://github.com/caoer/denv/commit/e9f43fc9007c906d8b8c4d4a23a6a8d1f4f3d187))
+
 ### Miscellaneous
 
 - Update changelog [skip ci] ([eef2258](https://github.com/caoer/denv/commit/eef22586752ed03047256934fa35f0c197a7671c))
@@ -50,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([8cdbe85](https://github.com/caoer/denv/commit/8cdbe85fc405ff8249e8297aa6c3655cbf81aa11))
 - Update changelog [skip ci] ([7ac0d1d](https://github.com/caoer/denv/commit/7ac0d1da23c9b9a4083611c08d105b2b9b977909))
 - Update changelog [skip ci] ([6a710af](https://github.com/caoer/denv/commit/6a710af0a6f3b2a55a6b349d77f131903a835a12))
+- Update changelog [skip ci] ([b49d59f](https://github.com/caoer/denv/commit/b49d59fa8feab1ea5816ce42bf8bcd0c1097c7b5))
 
 ## [1.0.0] - 2025-08-13
 
