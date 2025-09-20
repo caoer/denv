@@ -133,6 +133,54 @@ func TestApplyRulesWithGroupedPatterns(t *testing.T) {
 	assert.NotEmpty(t, overrides["API_PORT"], "API_PORT should have override")
 }
 
+func TestApplicationDirectoriesNotRemapped(t *testing.T) {
+	// Create a config with application-specific directories in system paths
+	cfg := &config.Config{
+		Patterns: []config.PatternRule{
+			{
+				Pattern: "DBT_PROFILES_DIR | TMP_DIR | GHOSTTY_RESOURCES_DIR | FOUNDRY_DIR",
+				Rule: config.Rule{
+					Action: "keep",
+				},
+			},
+			{
+				Pattern: "*_DIR",
+				Rule: config.Rule{
+					Action: "isolate",
+					Base:   "${DENV_ENV}",
+				},
+			},
+		},
+	}
+
+	// Test environment variables including application directories
+	env := map[string]string{
+		"DBT_PROFILES_DIR": "/Users/test/dbt",
+		"TMP_DIR": "/var/tmp",
+		"GHOSTTY_RESOURCES_DIR": "/Applications/Ghostty.app/Resources",
+		"USER_DIR": "/Users/test/userdata",
+	}
+
+	// Port mappings (none needed for this test)
+	ports := map[int]int{}
+
+	result, overrides := ApplyRules(env, cfg, ports, "/tmp/test-env")
+
+	// Application-specific directories should NOT be remapped (kept as-is)
+	assert.Equal(t, "/Users/test/dbt", result["DBT_PROFILES_DIR"], "DBT_PROFILES_DIR should not be remapped")
+	assert.Empty(t, overrides["DBT_PROFILES_DIR"], "DBT_PROFILES_DIR should not have override record")
+
+	assert.Equal(t, "/var/tmp", result["TMP_DIR"], "TMP_DIR should not be remapped")
+	assert.Empty(t, overrides["TMP_DIR"], "TMP_DIR should not have override record")
+
+	assert.Equal(t, "/Applications/Ghostty.app/Resources", result["GHOSTTY_RESOURCES_DIR"], "GHOSTTY_RESOURCES_DIR should not be remapped")
+	assert.Empty(t, overrides["GHOSTTY_RESOURCES_DIR"], "GHOSTTY_RESOURCES_DIR should not have override record")
+
+	// USER_DIR should be remapped (matches *_DIR but not in system paths)
+	assert.Equal(t, "/tmp/test-env/userdata", result["USER_DIR"], "USER_DIR should be remapped")
+	assert.NotEmpty(t, overrides["USER_DIR"], "USER_DIR should have override record")
+}
+
 func TestDenvHomeNotRemapped(t *testing.T) {
 	// Create a config with DENV_HOME in system paths
 	cfg := &config.Config{

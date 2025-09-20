@@ -2,8 +2,10 @@ package commands
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"syscall"
 
@@ -72,7 +74,93 @@ func ListEnvironments() ([]EnvironmentInfo, error) {
 }
 
 // List shows all environments across all projects (previously ps -a)
-func List() error {
+func List(plain bool) error {
+	if plain {
+		return ListPlain(os.Stdout)
+	}
+	return ListPretty()
+}
+
+// ListPlain outputs environments in a simple tab-separated format for piping
+func ListPlain(w io.Writer) error {
+	denvHome := paths.DenvHome()
+
+	// Find all environment directories
+	entries, err := os.ReadDir(denvHome)
+	if err != nil {
+		return fmt.Errorf("failed to read denv home: %w", err)
+	}
+
+	type envRecord struct {
+		project  string
+		env      string
+		status   string
+		sessions int
+		ports    int
+	}
+
+	var records []envRecord
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		name := entry.Name()
+		// Parse project-environment pattern
+		parts := strings.SplitN(name, "-", 2)
+		if len(parts) == 2 {
+			project := parts[0]
+			envName := parts[1]
+
+			// Load runtime to get session and port info
+			envPath := filepath.Join(denvHome, name)
+			runtime, _ := environment.LoadRuntime(envPath)
+
+			sessionCount := 0
+			portCount := 0
+			status := "inactive"
+
+			if runtime != nil {
+				// Count active sessions
+				for _, session := range runtime.Sessions {
+					if sessionExists(session.PID) {
+						sessionCount++
+						status = "active"
+					}
+				}
+				portCount = len(runtime.Ports)
+			}
+
+			records = append(records, envRecord{
+				project:  project,
+				env:      envName,
+				status:   status,
+				sessions: sessionCount,
+				ports:    portCount,
+			})
+		}
+	}
+
+	// Sort by project then environment name for consistent output
+	sort.Slice(records, func(i, j int) bool {
+		if records[i].project != records[j].project {
+			return records[i].project < records[j].project
+		}
+		return records[i].env < records[j].env
+	})
+
+	// Output tab-separated values
+	for _, r := range records {
+		fmt.Fprintf(w, "%s\t%s\t%s\t%d\t%d\n",
+			r.project, r.env, r.status, r.sessions, r.ports)
+	}
+
+	return nil
+}
+
+// ListPretty shows all environments with colorful formatting
+func ListPretty() error {
 	denvHome := paths.DenvHome()
 	
 	// Find all environment directories

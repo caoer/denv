@@ -79,6 +79,11 @@ func defaultConfig() *Config {
 	}
 }
 
+// GetDefaultPatterns returns the default pattern rules
+func GetDefaultPatterns() []PatternRule {
+	return defaultPatterns()
+}
+
 func defaultPatterns() []PatternRule {
 	// Pattern order matters - first match wins in ApplyRules
 	// System patterns must be listed before generic patterns
@@ -104,6 +109,22 @@ func defaultPatterns() []PatternRule {
 	// Application-specific paths
 	patterns = append(patterns, PatternRule{
 		Pattern: "SOLANA_HOME | KITTY_INSTALLATION_DIR | MINIO_HOME | TMUX_PLUGIN_MANAGER_PATH | BROWSERS_PROFILE_PATH",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
+
+	// Development tool and application directories that should be kept
+	patterns = append(patterns, PatternRule{
+		Pattern: "DBT_PROFILES_DIR | DBT_PROJECT_DIR | CCC_SESSIONS_DIR | TMP_DIR | PLAYGROUND_DIR",
+		Rule: Rule{
+			Action: "keep",
+		},
+	})
+
+	// Application-specific directories
+	patterns = append(patterns, PatternRule{
+		Pattern: "GHOSTTY_RESOURCES_DIR | GHOSTTY_BIN_DIR | FOUNDRY_DIR | CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR",
 		Rule: Rule{
 			Action: "keep",
 		},

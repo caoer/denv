@@ -29,7 +29,12 @@ func main() {
 		}
 
 	case "ls", "list":
-		if err := commands.List(); err != nil {
+		// Parse flags for ls/list command
+		fs := flag.NewFlagSet("ls", flag.ExitOnError)
+		plain := fs.Bool("plain", false, "Output in plain tab-separated format for piping")
+		_ = fs.Parse(os.Args[2:])
+
+		if err := commands.List(*plain); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
@@ -84,6 +89,17 @@ func main() {
 		if err := commands.Export(envName, os.Stdout); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
+		}
+
+	case "config":
+		if len(os.Args) > 2 && os.Args[2] == "update" {
+			if err := commands.ConfigUpdate(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			}
+		} else {
+			fmt.Println("Usage: denv config update")
+			fmt.Println("Updates the config file with new default patterns while preserving project overrides")
 		}
 
 	case "project":
@@ -143,7 +159,7 @@ func printUsage() {
 
 Usage:
   denv enter [name]      Enter environment (default: "default")
-  denv ls                List all environments across all projects
+  denv ls [--plain]      List all environments (--plain for pipe-friendly output)
   denv ps                Show current environment status
   denv rm <name>         Remove environment
   denv rm --all          Remove all inactive environments
@@ -154,6 +170,7 @@ Usage:
   denv project           Show current project name
   denv project rename <name> Rename current project
   denv project unset     Remove project override
+  denv config update     Update config with new default patterns
   denv help             Show this help
 
 Environment Variables:

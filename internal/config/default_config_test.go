@@ -48,7 +48,7 @@ func TestDefaultConfigCreation(t *testing.T) {
 
 func containsSystemPath(pattern string) bool {
 	// Check if the pattern contains any of the system paths
-	systemPaths := []string{"CARGO_HOME", "RUSTUP_HOME", "PNPM_HOME", "NIX_PATH"}
+	systemPaths := []string{"CARGO_HOME", "RUSTUP_HOME", "PNPM_HOME", "NIX_PATH", "DBT_PROFILES_DIR", "GHOSTTY_RESOURCES_DIR", "TMP_DIR"}
 	for _, path := range systemPaths {
 		if strings.Contains(pattern, path) {
 			return true
@@ -112,6 +112,33 @@ func TestPatternOrder(t *testing.T) {
 	assert.True(t, foundGenericPattern, "Should have generic patterns")
 }
 
+func TestApplicationDirectoriesAreKept(t *testing.T) {
+	cfg := defaultConfig()
+
+	// List of application-specific directories that should have "keep" action
+	// We test a representative subset to ensure the functionality works
+	applicationDirs := []string{
+		"DBT_PROFILES_DIR",
+		"TMP_DIR",
+		"GHOSTTY_RESOURCES_DIR",
+		"FOUNDRY_DIR",
+	}
+
+	// Check that each application directory is in at least one pattern with "keep" action
+	for _, dir := range applicationDirs {
+		found := false
+		for _, pr := range cfg.Patterns {
+			if strings.Contains(pr.Pattern, dir) {
+				assert.Equal(t, "keep", pr.Rule.Action,
+					"%s should have 'keep' action", dir)
+				found = true
+				break
+			}
+		}
+		assert.True(t, found, "%s should be in a pattern", dir)
+	}
+}
+
 func TestGroupedSystemPathPatterns(t *testing.T) {
 	cfg := defaultConfig()
 	
@@ -133,9 +160,9 @@ func TestGroupedSystemPathPatterns(t *testing.T) {
 		}
 	}
 	
-	// We should have multiple grouped patterns (4 groups of system paths)
-	assert.Equal(t, 4, keepPatternCount, 
-		"Should have exactly 4 grouped system path patterns")
+	// We should have multiple grouped patterns (6 groups of system paths)
+	assert.Equal(t, 6, keepPatternCount,
+		"Should have exactly 6 grouped system path patterns")
 	
 	// Verify all expected system paths are present across all patterns
 	expectedPaths := []string{
@@ -146,6 +173,10 @@ func TestGroupedSystemPathPatterns(t *testing.T) {
 		"TMUX_PLUGIN_MANAGER_PATH", "GOPATH", "GOROOT", "NVM_DIR",
 		"RBENV_ROOT", "PYENV_ROOT", "SDKMAN_DIR", "HOMEBREW_PREFIX",
 		"HOMEBREW_CELLAR", "HOMEBREW_REPOSITORY",
+		// New application and development tool directories
+		"DBT_PROFILES_DIR", "DBT_PROJECT_DIR", "CCC_SESSIONS_DIR",
+		"TMP_DIR", "PLAYGROUND_DIR", "GHOSTTY_RESOURCES_DIR",
+		"GHOSTTY_BIN_DIR", "FOUNDRY_DIR",
 	}
 	
 	// Check each path is in at least one pattern
