@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configure gosec to not fail CI on security findings ([c8a9927](https://github.com/caoer/denv/commit/c8a9927c68769f19cf6a016308c05b33e4431e65))
 - Simplify gosec security scan step ([b0b5bcb](https://github.com/caoer/denv/commit/b0b5bcb3a9a8747bd0d7df59d331012181caa952))
 - Update Go version to 1.24 to match go.mod ([8435216](https://github.com/caoer/denv/commit/843521677d8f3b99e9a7b660203c835178e0cd41))
+- Bump the github-actions group across 1 directory with 8 updates ([7dff603](https://github.com/caoer/denv/commit/7dff603521cad197b05d6e6c7f46eb160acebc88))
 
 ### Features
 
@@ -55,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update changelog [skip ci] ([7ac0d1d](https://github.com/caoer/denv/commit/7ac0d1da23c9b9a4083611c08d105b2b9b977909))
 - Update changelog [skip ci] ([6a710af](https://github.com/caoer/denv/commit/6a710af0a6f3b2a55a6b349d77f131903a835a12))
 - Update changelog [skip ci] ([b49d59f](https://github.com/caoer/denv/commit/b49d59fa8feab1ea5816ce42bf8bcd0c1097c7b5))
+- Update changelog [skip ci] ([c14b629](https://github.com/caoer/denv/commit/c14b6297d0802b05315143d7440333145e8ad570))
 
 ## [1.0.0] - 2025-08-13
 
